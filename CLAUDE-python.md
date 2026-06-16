@@ -1,154 +1,300 @@
-# 🐍 Hướng Dẫn Python — Dành Cho Culi
+# Python Development Guidelines
 
-> File này đặt tại thư mục gốc của project Python, đặt tên là `CLAUDE.md`
-> Hoặc import vào global bằng cách thêm `@CLAUDE-python.md` trong `~/.claude/CLAUDE.md`
+## Core Principles
 
----
+* Tuân thủ PEP8.
+* Tuân thủ Clean Code.
+* Ưu tiên readability hơn clever code.
+* Ưu tiên maintainability hơn tối ưu hóa sớm.
+* Ưu tiên giải pháp đơn giản nhất đáp ứng yêu cầu.
+* Tính đúng đắn quan trọng hơn hiệu năng.
+* Hiệu năng chỉ được tối ưu khi có bằng chứng hoặc yêu cầu rõ ràng.
 
-## Triết Lý Code Python
+## Existing Codebase First
 
-- Tuân thủ **"Pythonic"**: dùng list comprehension, context manager, unpacking đúng chỗ
-- Ưu tiên **rõ ràng hơn ngắn gọn** — tên biến phải nói lên được ý nghĩa
-- Áp dụng nguyên tắc **"Fail fast"** — raise lỗi sớm, đừng để lỗi âm thầm chạy qua
-- Mỗi hàm chỉ làm **một việc duy nhất** — nếu phải dùng "và" để mô tả hàm thì cần tách ra
+Khi làm việc trong codebase hiện có:
 
----
+* Hiểu kiến trúc hiện tại trước khi sửa.
+* Tuân thủ pattern đang được sử dụng.
+* Tuân thủ convention hiện có của project.
+* Tuân thủ dependency boundaries hiện có.
+* Ưu tiên consistency hơn sở thích cá nhân.
 
-## Cấu Trúc Project
+Không được:
 
-```
-project/
-├── src/
-│   └── module/
-│       ├── __init__.py
-│       ├── models.py       # Data models / dataclass / pydantic
-│       ├── services.py     # Business logic
-│       ├── utils.py        # Helper functions
-│       └── exceptions.py  # Custom exceptions
-├── tests/
-│   └── test_*.py
-├── .env.example
-├── pyproject.toml          # Ưu tiên dùng thay vì setup.py
-└── README.md
-```
+* Tự ý thay đổi kiến trúc.
+* Tự ý đổi naming convention.
+* Tự ý refactor ngoài phạm vi task.
+* Tự ý thay đổi public API.
 
----
+## Code Structure
 
-## Quy Tắc Viết Code
+* Mỗi module chỉ nên có một trách nhiệm chính.
+* Mỗi function chỉ nên có một trách nhiệm rõ ràng.
+* Tránh function quá dài.
+* Tránh class quá lớn.
+* Ưu tiên composition hơn inheritance.
+* Tránh abstraction sớm.
+* Tránh tạo helper chỉ dùng một lần.
+* Tránh tạo class khi function là đủ.
 
-### Type Hints — Bắt Buộc
+## Naming
+
+* Tên phải mô tả đúng mục đích.
+* Không dùng tên mơ hồ như:
+
+  * data
+  * obj
+  * item
+  * temp
+  * result
+  * value
+
+Trừ khi ngữ cảnh thực sự rõ ràng.
+
+## Clean Code
+
+* Ưu tiên early return.
+* Tránh nested condition quá sâu.
+* Tránh duplicate logic.
+* Tránh side effects không rõ ràng.
+* Tránh hàm làm nhiều việc.
+* Tránh boolean flag làm thay đổi nhiều hành vi trong cùng một function.
+
+## Imports
+
+* Import phải ở đầu file.
+* Không import bên trong function.
+
+Chỉ ngoại lệ khi:
+
+* Lazy loading là cần thiết.
+* Dependency rất nặng.
+* Đã xác nhận nguyên nhân circular dependency.
+
+Không dùng import trong function để che giấu lỗi kiến trúc.
+
+## Dependency Management
+
+* Tránh circular import.
+* Tránh dependency ngược chiều giữa các layer.
+* Ưu tiên dependency một chiều.
+* Nếu phát hiện circular dependency:
+
+  * Phân tích nguyên nhân kiến trúc.
+  * Refactor dependency graph.
+  * Không giải quyết bằng workaround tạm thời.
+
+## Module Boundaries
+
+* Tôn trọng ranh giới module.
+* Không truy cập internal implementation của module khác.
+* Chỉ sử dụng public API.
+* Không tạo dependency mới giữa các module độc lập nếu không thực sự cần.
+* Không kéo business logic xuyên nhiều module.
+
+## Layer Separation
+
+Tách biệt rõ:
+
+* API Layer
+* Service Layer
+* Business Logic
+* Repository Layer
+* Infrastructure Layer
+
+Không để:
+
+* API xử lý business logic.
+* Repository chứa business logic.
+* Infrastructure điều khiển flow nghiệp vụ.
+
+## Paths And Files
+
+* Không hardcode absolute path.
+* Không hardcode path phụ thuộc môi trường.
+* Ưu tiên pathlib.Path.
+* Cấu hình phải lấy từ config hoặc environment variables.
+
+Không được:
+
+* Hardcode đường dẫn local.
+* Hardcode username.
+* Hardcode machine-specific configuration.
+
+## Configuration
+
+Tất cả giá trị thay đổi theo môi trường phải nằm trong:
+
+* Config file
+* Environment variables
+* Secret manager
+
+Không hardcode:
+
+* URL
+* API key
+* Token
+* Password
+* Hostname
+* Port
+* Business configuration
+
+## Type Hints
+
+* Sử dụng type hints cho public API.
+
+* Ưu tiên typing hiện đại:
+
+  * list[str]
+  * dict[str, Any]
+  * tuple[str, int]
+
+* Không tạo type phức tạp làm giảm readability.
+
+* Type phải hỗ trợ maintainability.
+
+## Dataclasses And Models
+
+Ưu tiên:
+
+* dataclass cho DTO đơn giản.
+* Pydantic cho validation và schema.
+
+Không tạo class chỉ để chứa dữ liệu đơn giản nếu dataclass đã đủ.
+
+## Error Handling
+
+* Không bỏ qua exception.
+* Không dùng bare except.
+* Không swallow exception.
+
+Luôn:
+
+* Bắt exception cụ thể.
+* Log đầy đủ context cần thiết.
+* Preserve stack trace khi phù hợp.
+
+Ưu tiên:
+
 ```python
-# ✅ Đúng
-def tinh_tong(a: int, b: int) -> int:
-    return a + b
-
-def lay_nguoi_dung(user_id: str) -> dict | None:
-    ...
-
-# ❌ Sai — thiếu type hint
-def tinh_tong(a, b):
-    return a + b
+except SpecificError as exc:
 ```
 
-### Xử Lý Lỗi — Luôn Cụ Thể
-```python
-# ✅ Đúng — bắt lỗi cụ thể, log rõ ràng
-try:
-    ket_qua = goi_api(url)
-except httpx.TimeoutException as e:
-    logger.error("API timeout sau %s giây: %s", TIMEOUT, e)
-    raise ServiceUnavailableError("Dịch vụ tạm thời không khả dụng") from e
-except httpx.HTTPStatusError as e:
-    logger.error("API trả về lỗi %s: %s", e.response.status_code, e)
-    raise
-
-# ❌ Sai — nuốt lỗi, không biết chuyện gì xảy ra
-try:
-    ket_qua = goi_api(url)
-except Exception:
-    pass
-```
-
-### Dataclass / Pydantic Thay Cho Dict Lồng Nhau
-```python
-# ✅ Đúng — rõ ràng, có type safety
-from dataclasses import dataclass
-
-@dataclass
-class NguoiDung:
-    id: str
-    ten: str
-    email: str
-    la_admin: bool = False
-
-# ❌ Sai — dict lồng nhau, dễ lỗi, khó đọc
-nguoi_dung = {"id": "123", "ten": "Nam", "email": "nam@example.com"}
-```
-
-### Async — Dùng Đúng Chỗ
-```python
-# ✅ Đúng — async khi gọi I/O (API, DB, file)
-async def lay_du_lieu(user_id: str) -> NguoiDung:
-    async with httpx.AsyncClient() as client:
-        response = await client.get(f"/users/{user_id}")
-        response.raise_for_status()
-        return NguoiDung(**response.json())
-
-# ❌ Sai — dùng async cho logic thuần tính toán
-async def cong_hai_so(a: int, b: int) -> int:
-    return a + b
-```
-
----
-
-## Logging — Không Dùng print()
+Tránh:
 
 ```python
-import logging
-
-logger = logging.getLogger(__name__)
-
-# ✅ Đúng
-logger.info("Bắt đầu xử lý đơn hàng: %s", order_id)
-logger.warning("Số lượng tồn kho thấp: còn %d sản phẩm", so_luong)
-logger.error("Không thể kết nối DB: %s", error)
-
-# ❌ Sai
-print(f"Xử lý đơn hàng {order_id}")
+except:
 ```
 
----
+## Logging
 
-## Testing — Pytest
+* Logging thay vì print trong production code.
+* Log đủ context để debug.
+* Không log secrets.
+* Không log credentials.
+* Không log token.
 
-- Mỗi function public phải có ít nhất **1 test happy path + 1 test edge case**
-- Dùng `pytest.fixture` cho data dùng chung
-- Mock external calls bằng `unittest.mock` hoặc `pytest-mock`
-- Đặt tên test rõ ràng: `test_<tên_hàm>_<tình_huống>_<kết_quả_mong_đợi>`
+## Async Programming
 
-```python
-def test_tinh_tong_so_am_tra_ve_dung():
-    assert tinh_tong(-1, -2) == -3
+* Chỉ dùng async khi có lợi ích rõ ràng.
+* Không chuyển code sang async chỉ vì xu hướng.
+* Không trộn sync và async một cách tùy tiện.
+* Quản lý timeout rõ ràng.
 
-def test_lay_nguoi_dung_khong_ton_tai_raise_not_found():
-    with pytest.raises(NotFoundError):
-        lay_nguoi_dung("id-khong-co")
-```
+## Database
 
----
+* Tránh N+1 query.
+* Tránh query trong loop.
+* Sử dụng transaction khi cần.
+* Validation không thay thế constraint của database.
 
-## Quản Lý Dependencies
+## Testing
 
-- Dùng **`pyproject.toml`** + `uv` hoặc `poetry` (không dùng `pip` thuần cho project thật)
-- **Không bao giờ** hardcode secret — dùng `.env` + `python-dotenv` hoặc biến môi trường
-- Pin phiên bản dependencies trong production: `httpx==0.27.0` thay vì `httpx>=0.27`
+Ưu tiên pytest.
 
----
+Test phải:
 
-## Checklist Trước Khi Commit
+* Độc lập.
+* Dễ đọc.
+* Có thể lặp lại.
 
-- [ ] Chạy `ruff check .` — không có lỗi lint
-- [ ] Chạy `mypy .` — không có lỗi type
-- [ ] Chạy `pytest` — tất cả test pass
-- [ ] Không có `print()` nào còn sót lại
-- [ ] Không có secret hay API key trong code
+Test:
+
+* Behavior.
+* Business rules.
+* Edge cases.
+
+Không test:
+
+* Internal implementation.
+* Chi tiết không ảnh hưởng hành vi.
+
+## Performance
+
+* Đo đạc trước khi tối ưu.
+* Benchmark trước khi tối ưu.
+* Profile trước khi tối ưu.
+
+Không:
+
+* Tối ưu theo cảm tính.
+* Hy sinh readability để tối ưu sớm.
+
+## AI Safety Rules
+
+Trước khi viết code:
+
+* Tìm implementation hiện có.
+* Tìm utility hiện có.
+* Tìm service hiện có.
+* Tìm pattern hiện có.
+
+Ưu tiên tái sử dụng.
+
+Không được:
+
+* Hardcode dữ liệu để pass test.
+* Hardcode business rules.
+* Hardcode config.
+* Hardcode response giả.
+* Hardcode URL.
+* Hardcode credentials.
+* Copy-paste logic giữa các module.
+* Viết workaround che giấu bug.
+
+Luôn ưu tiên:
+
+* Root cause fix.
+* Reusable solution.
+* Maintainable solution.
+
+## Large Repository Safety
+
+Khi làm việc trong monorepo hoặc codebase lớn:
+
+* Hiểu dependency graph trước khi sửa.
+* Chỉ sửa phạm vi liên quan đến task.
+* Không refactor ngoài phạm vi yêu cầu.
+* Không đổi tên package nếu không được yêu cầu.
+* Không đổi public API nếu không được yêu cầu.
+* Cảnh báo nếu thay đổi có thể ảnh hưởng module khác.
+
+## Completion Checklist
+
+Trước khi hoàn thành task:
+
+* Tuân thủ PEP8.
+* Không có circular import.
+* Không import trong function.
+* Không hardcode.
+* Không duplicate logic.
+* Không vi phạm module boundary.
+* Không tạo dependency không cần thiết.
+* Có xử lý lỗi phù hợp.
+* Có type hints phù hợp.
+* Có test impact assessment.
+* Có đánh giá edge cases.
+
+When modifying existing code:
+Prefer extending existing patterns over introducing new patterns.
