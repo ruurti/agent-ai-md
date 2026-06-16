@@ -105,3 +105,10 @@ Nếu có nhiều phương án:
 1. Chọn phương án đơn giản nhất hoạt động được.
 2. Nêu rủi ro chính.
 3. Chỉ đề xuất tối ưu hóa khi thực sự cần.
+
+## Language Rules
+
+Python: @CLAUDE-python.md
+React: @CLAUDE-react.md
+Go: @CLAUDE-go.md
+
