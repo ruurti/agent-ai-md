@@ -1,199 +1,364 @@
-# ⚛️ Hướng Dẫn React — Dành Cho Culi
+# React Development Guidelines
 
-> File này đặt tại thư mục gốc của project React, đặt tên là `CLAUDE.md`
-> Hoặc import vào global bằng cách thêm `@CLAUDE-react.md` trong `~/.claude/CLAUDE.md`
+## Core Principles
 
----
+* Tuân thủ code style hiện có của project.
+* Ưu tiên readability.
+* Ưu tiên maintainability.
+* Ưu tiên consistency.
+* Ưu tiên giải pháp đơn giản nhất hoạt động được.
+* Không tối ưu sớm.
+* Không over-engineering.
 
-## Triết Lý Code React
+## Existing Codebase First
 
-- **Component nhỏ, tập trung** — mỗi component chỉ làm một việc, dễ test, dễ tái sử dụng
-- **Logic ra ngoài UI** — business logic nằm trong custom hooks, không nằm trong JSX
-- **Tránh over-engineering** — không dùng Redux/Zustand nếu `useState` + `useContext` là đủ
-- **Performance sau, correctness trước** — đừng tối ưu sớm, đo trước khi dùng `memo`/`useMemo`
+Khi làm việc trong codebase hiện có:
 
----
+* Hiểu pattern hiện tại trước khi sửa.
+* Tuân thủ convention hiện có.
+* Tuân thủ cấu trúc thư mục hiện có.
+* Tuân thủ state management hiện có.
+* Tuân thủ data fetching pattern hiện có.
 
-## Cấu Trúc Project
+Không được:
 
-```
-src/
-├── components/         # UI components tái sử dụng (Button, Modal, Input...)
-│   └── Button/
-│       ├── Button.tsx
-│       ├── Button.test.tsx
-│       └── index.ts    # Re-export
-├── features/           # Tính năng cụ thể (Auth, Dashboard, Orders...)
-│   └── auth/
-│       ├── components/ # Component chỉ dùng trong feature này
-│       ├── hooks/      # Custom hooks của feature
-│       ├── api.ts      # API calls của feature
-│       └── types.ts    # Types của feature
-├── hooks/              # Custom hooks dùng chung toàn app
-├── lib/                # Helpers, utils, config
-├── types/              # Global TypeScript types
-└── app/                # Routes (Next.js App Router hoặc React Router)
-```
+* Tự ý đổi kiến trúc.
+* Tự ý đổi state management.
+* Tự ý đổi UI framework.
+* Tự ý refactor ngoài phạm vi task.
 
----
+Ưu tiên:
 
-## Quy Tắc Viết Component
+* Consistency hơn sở thích cá nhân.
+* Existing pattern hơn pattern mới.
 
-### TypeScript — Bắt Buộc
-```tsx
-// ✅ Đúng — Props được định nghĩa rõ ràng
-interface NutBamProps {
-  nhan: string
-  onClick: () => void
-  dangTai?: boolean
-  bien_the?: 'chinh' | 'phu' | 'nguy_hiem'
-}
+## Component Design
 
-export function NutBam({ nhan, onClick, dangTai = false, bien_the = 'chinh' }: NutBamProps) {
-  return (
-    <button onClick={onClick} disabled={dangTai}>
-      {dangTai ? 'Đang xử lý...' : nhan}
-    </button>
-  )
-}
+* Một component chỉ nên có một trách nhiệm chính.
+* Component phải dễ đọc.
+* Component phải dễ test.
+* Component phải dễ tái sử dụng.
 
-// ❌ Sai — any, không có type
-export function NutBam({ nhan, onClick }: any) { ... }
-```
+Tránh:
 
-### Custom Hook — Tách Logic Khỏi UI
-```tsx
-// ✅ Đúng — logic trong hook, component chỉ lo render
-function useDanhSachSanPham(danh_muc: string) {
-  const [san_pham, setSanPham] = useState<SanPham[]>([])
-  const [dang_tai, setDangTai] = useState(false)
-  const [loi, setLoi] = useState<string | null>(null)
+* God Component.
+* Component quá dài.
+* Component xử lý quá nhiều business logic.
 
-  useEffect(() => {
-    setDangTai(true)
-    laySanPham(danh_muc)
-      .then(setSanPham)
-      .catch((e) => setLoi(e.message))
-      .finally(() => setDangTai(false))
-  }, [danh_muc])
+Nếu component trở nên phức tạp:
 
-  return { san_pham, dang_tai, loi }
-}
+* Tách thành component nhỏ hơn.
+* Hoặc tách logic thành custom hook.
 
-// Trong component — gọn, dễ đọc
-function DanhSachSanPham({ danh_muc }: { danh_muc: string }) {
-  const { san_pham, dang_tai, loi } = useDanhSachSanPham(danh_muc)
+## State Management
 
-  if (dang_tai) return <Skeleton />
-  if (loi) return <ThongBaoLoi loi={loi} />
-  return <ul>{san_pham.map((sp) => <ItemSanPham key={sp.id} {...sp} />)}</ul>
-}
-```
+Ưu tiên:
 
-### Xử Lý Trạng Thái Loading/Error — Không Bỏ Sót
-```tsx
-// ✅ Luôn xử lý đủ 3 trạng thái
-if (dang_tai) return <TrangThaiTai />
-if (loi) return <TrangThaiLoi loi={loi} thu_lai={refetch} />
-if (!du_lieu?.length) return <TrangThaiRong />
+1. Local State
+2. Lift State Up
+3. Context
+4. Global State
 
-return <DanhSach items={du_lieu} />
-```
+Không đưa state lên global nếu local state là đủ.
 
----
+Không tạo global state chỉ để chia sẻ cho một vài component.
 
-## Quản Lý State
+## State Ownership
 
-| Tình huống | Giải pháp |
-|---|---|
-| State cục bộ của component | `useState` |
-| State chia sẻ trong một feature | `useContext` + `useReducer` |
-| State server (API data) | `TanStack Query` (React Query) |
-| State toàn app phức tạp | `Zustand` (nhẹ) hoặc `Redux Toolkit` |
-| Form | `React Hook Form` + `Zod` |
+State nên nằm gần nơi sử dụng nhất.
 
-**Quy tắc:** Bắt đầu với `useState`, chỉ nâng lên khi thực sự cần.
+Không:
 
----
+* Duplicate state.
+* Mirror state không cần thiết.
+* Copy props vào state nếu không có lý do rõ ràng.
 
-## API Calls — Dùng TanStack Query
+## Hooks
 
-```tsx
-// ✅ Đúng — tận dụng cache, retry, loading state tự động
-function useDonHang(order_id: string) {
-  return useQuery({
-    queryKey: ['don-hang', order_id],
-    queryFn: () => layDonHang(order_id),
-    staleTime: 5 * 60 * 1000, // Cache 5 phút
-  })
-}
+Tuân thủ Rules of Hooks.
 
-// ✅ Mutation có optimistic update
-function useCapNhatDonHang() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: capNhatDonHang,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['don-hang'] })
-    },
-  })
-}
+Không:
 
-// ❌ Sai — fetch thủ công trong useEffect, không có cache
-useEffect(() => {
-  fetch('/api/don-hang').then(r => r.json()).then(setDonHang)
-}, [])
-```
+* Gọi hook trong condition.
+* Gọi hook trong loop.
+* Gọi hook trong nested function.
 
----
+## useEffect Rules
 
-## Performance — Đo Trước, Tối Ưu Sau
+Không dùng useEffect cho:
 
-```tsx
-// Chỉ dùng memo khi component re-render không cần thiết đã được xác nhận
-const ItemSanPham = memo(function ItemSanPham({ san_pham }: { san_pham: SanPham }) {
-  return <div>{san_pham.ten}</div>
-})
+* Derived state.
+* Data transformation đơn giản.
+* Computation đơn giản.
+* Đồng bộ state không cần thiết.
 
-// useMemo chỉ cho tính toán nặng (filter/sort list lớn)
-const san_pham_da_loc = useMemo(
-  () => danh_sach.filter((sp) => sp.danh_muc === danh_muc_hien_tai),
-  [danh_sach, danh_muc_hien_tai]
-)
+Trước khi viết useEffect:
 
-// useCallback chỉ khi truyền function vào memo component
-const xu_ly_xoa = useCallback((id: string) => {
-  xoaSanPham(id)
-}, [xoaSanPham])
-```
+Hỏi:
 
----
+* Có thực sự là side effect không?
+* Có thể giải quyết bằng state hoặc props không?
 
-## Accessibility — Không Bỏ Qua
+Ưu tiên loại bỏ useEffect nếu không cần.
 
-```tsx
-// ✅ Luôn có aria-label cho icon button
-<button aria-label="Đóng hộp thoại" onClick={onClose}>
-  <XIcon />
-</button>
+## Custom Hooks
 
-// ✅ Role và aria cho component tự làm
-<div role="dialog" aria-modal="true" aria-labelledby="tieu-de-hop-thoai">
-  <h2 id="tieu-de-hop-thoai">Xác nhận xóa</h2>
-</div>
+Chỉ tạo custom hook khi:
 
-// ✅ Ảnh luôn có alt text có nghĩa
-<img src={anh_san_pham} alt={`Ảnh sản phẩm: ${ten_san_pham}`} />
-```
+* Logic được tái sử dụng.
+* Logic đủ phức tạp.
 
----
+Không tạo custom hook cho logic quá nhỏ.
 
-## Checklist Trước Khi Commit
+Không tạo hook chỉ để bọc vài dòng code.
 
-- [ ] Chạy `tsc --noEmit` — không có lỗi TypeScript
-- [ ] Chạy `eslint .` — không có warning
-- [ ] Chạy test — tất cả pass
-- [ ] Không có `console.log` nào còn sót
-- [ ] Loading state + Error state đã được xử lý
-- [ ] Không có hardcode string (dùng biến hoặc i18n nếu cần)
-- [ ] Component mới đã có test cơ bản
+## Data Fetching
+
+Ưu tiên data fetching solution hiện có trong project.
+
+Nếu project sử dụng:
+
+* TanStack Query
+* React Query
+* SWR
+
+Thì tiếp tục sử dụng.
+
+Không tự viết:
+
+* Cache layer
+* Retry mechanism
+* Loading manager
+
+Nếu framework đã hỗ trợ.
+
+## API Layer
+
+Không gọi API trực tiếp trong nhiều component.
+
+Ưu tiên:
+
+* API client
+* Service layer
+* Query layer
+
+Tách biệt:
+
+* UI
+* Fetching
+* Business logic
+
+## Business Logic
+
+Không nhúng business logic phức tạp vào component.
+
+Ưu tiên:
+
+* Services
+* Utilities
+* Custom hooks
+
+Component nên tập trung vào rendering.
+
+## Forms
+
+Ưu tiên pattern hiện có của project.
+
+Không:
+
+* Tự viết form framework.
+* Duplicate validation logic.
+
+Validation nên có:
+
+* Client side
+* Server side
+
+## Performance
+
+Không dùng:
+
+* useMemo
+* useCallback
+* memo
+
+Theo mặc định.
+
+Chỉ sử dụng khi:
+
+* Có vấn đề thực tế.
+* Có profiling chứng minh.
+
+Không memo hóa mọi thứ.
+
+## Rendering
+
+Tránh:
+
+* Re-render không cần thiết.
+* Computation nặng trong render.
+* Inline object phức tạp.
+* Inline function phức tạp.
+
+Ưu tiên code dễ đọc trước.
+
+## Component Communication
+
+Ưu tiên:
+
+* Props
+* Context
+* State Management
+
+Không:
+
+* Event bus tùy tiện.
+* Shared mutable state.
+* Global singleton không cần thiết.
+
+## Module Boundaries
+
+Tôn trọng module boundaries hiện có.
+
+Không:
+
+* Import xuyên tầng.
+* Import internal implementation.
+* Truy cập private modules.
+
+Ưu tiên:
+
+* Public API.
+* Shared contracts.
+
+## Imports
+
+* Tuân thủ convention hiện có.
+* Không tạo dependency vòng.
+* Không import từ deep internal path nếu project đã có public export.
+
+Ví dụ tránh:
+
+import "../../../../../feature/internal/component"
+
+Ưu tiên:
+
+import { UserCard } from "@/features/user"
+
+## Styling
+
+Tuân thủ giải pháp hiện có:
+
+* Tailwind
+* CSS Modules
+* Styled Components
+* Emotion
+
+Không trộn nhiều styling strategy.
+
+Không tạo strategy mới nếu không cần.
+
+## Error Handling
+
+Mọi async operation phải có:
+
+* Error handling
+* Loading state
+
+Không:
+
+* Ignore error
+* Silent failure
+
+## UX Rules
+
+Mọi màn hình nên xử lý:
+
+* Loading state
+* Error state
+* Empty state
+
+Không giả định dữ liệu luôn tồn tại.
+
+## Accessibility
+
+Ưu tiên:
+
+* Semantic HTML
+* Accessible form labels
+* Keyboard navigation
+
+Không hy sinh accessibility vì tốc độ phát triển.
+
+## Testing
+
+Test:
+
+* User behavior
+* Business behavior
+* User interaction
+
+Không test:
+
+* Internal implementation
+* Hook internals
+* State internals
+
+Ưu tiên:
+
+* React Testing Library
+
+## AI Safety Rules
+
+Trước khi sửa code:
+
+* Tìm pattern hiện có.
+* Tìm component tương tự.
+* Tìm hook tương tự.
+* Tìm service tương tự.
+
+Ưu tiên tái sử dụng.
+
+Không được:
+
+* Hardcode dữ liệu.
+* Hardcode API response.
+* Hardcode business rule.
+* Hardcode role permission.
+* Hardcode feature flag.
+* Copy-paste logic giữa các component.
+
+## Large Repository Safety
+
+Khi làm việc trong monorepo hoặc codebase lớn:
+
+* Hiểu dependency graph trước khi sửa.
+* Chỉ sửa phạm vi liên quan đến task.
+* Không refactor ngoài phạm vi yêu cầu.
+* Không đổi public API nếu không được yêu cầu.
+* Cảnh báo nếu thay đổi có thể ảnh hưởng module khác.
+
+## Completion Checklist
+
+Trước khi hoàn thành task:
+
+* Không có state dư thừa.
+* Không có useEffect không cần thiết.
+* Không có duplicate logic.
+* Không có hardcode.
+* Không có dependency vòng.
+* Không vi phạm module boundary.
+* Có loading state phù hợp.
+* Có error state phù hợp.
+* Có đánh giá edge cases.
+* Tuân thủ pattern hiện có của project.
+
+Framework Features First
+
+Before introducing custom solutions:
+
+- Check whether React already provides it.
+- Check whether Next.js already provides it.
+- Check whether the existing project already provides it.
+
+Prefer framework-native solutions over custom abstractions.
