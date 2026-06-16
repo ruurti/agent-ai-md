@@ -111,4 +111,5 @@ Nếu có nhiều phương án:
 Python: @CLAUDE-python.md
 React: @CLAUDE-react.md
 Go: @CLAUDE-go.md
+PHP: @CLAUDE-php.md
 
