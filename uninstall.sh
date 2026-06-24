@@ -25,7 +25,7 @@ for entry in "${CLAUDE_DIR}/${PREFIX}_"*; do
     ok "Removed: $entry"
     found=1
 done
-[[ $found -eq 0 ]] && warn "Nothing to remove (not installed or already uninstalled)."
+if [[ $found -eq 0 ]]; then warn "Nothing to remove (not installed or already uninstalled)."; fi
 
 # ── Remove @mention from CLAUDE.md ────────────────────────────────────────────
 echo ""

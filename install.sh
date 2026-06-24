@@ -43,7 +43,7 @@ cleanup() {
         ok "Removed: $entry"
         found=1
     done
-    [[ $found -eq 1 ]] && info "Previous install cleaned."
+    if [[ $found -eq 1 ]]; then info "Previous install cleaned."; fi
 }
 
 # ── Install ───────────────────────────────────────────────────────────────────
