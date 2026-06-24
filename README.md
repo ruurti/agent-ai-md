@@ -53,10 +53,16 @@ Same command. Install cleans `ruurti_*` in `~/.claude/` before copying fresh fil
 ## Uninstall
 
 ```bash
-rm -rf ~/.claude/ruurti_languages ~/.claude/ruurti_tools
-# Restore original CLAUDE.md if needed:
-cp ~/.claude/CLAUDE.md.bak ~/.claude/CLAUDE.md
+curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/uninstall.sh | bash
 ```
+
+No `curl`? Use `wget`:
+
+```bash
+wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/uninstall.sh | bash
+```
+
+Removes `ruurti_*` from `~/.claude/` and restores the original `CLAUDE.md` from backup.
 
 ---
 
