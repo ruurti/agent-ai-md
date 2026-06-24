@@ -115,14 +115,14 @@ This repo is a CLAUDE.md configuration template for AI coding assistants.
 
 ## Language Rules
 
-Python: @languages/CLAUDE-python.md
-React: @languages/CLAUDE-react.md
-Go: @languages/CLAUDE-go.md
-PHP: @languages/CLAUDE-php.md
+Python: @ruurti_languages/CLAUDE-python.md
+React: @ruurti_languages/CLAUDE-react.md
+Go: @ruurti_languages/CLAUDE-go.md
+PHP: @ruurti_languages/CLAUDE-php.md
 
 ## Tool Rules
 
-RTK: @tools/RTK.md
+RTK: @ruurti_tools/RTK.md
 
 ## SKILLS AWARENESS
 

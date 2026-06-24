@@ -28,13 +28,13 @@ cleanup() {
 # ── Install ───────────────────────────────────────────────────────────────────
 install_languages() {
     mkdir -p "$LANG_DIR"
-    cp languages/*.md "$LANG_DIR/"
+    cp "${PREFIX}_languages"/*.md "$LANG_DIR/"
     ok "Languages → ${LANG_DIR}/"
 }
 
 install_tools() {
     mkdir -p "$TOOLS_DIR"
-    cp tools/*.md "$TOOLS_DIR/"
+    cp "${PREFIX}_tools"/*.md "$TOOLS_DIR/"
     ok "Tools     → ${TOOLS_DIR}/"
 }
 
@@ -47,15 +47,12 @@ install_claude_md() {
         warn "Backed up original CLAUDE.md → ${dst}.bak"
     fi
 
-    # Strip PROJECT CONTEXT section + rewrite @references to prefixed dirs
+    # Strip PROJECT CONTEXT section — @references already use prefixed dirs
     awk '
         /^## PROJECT CONTEXT/ { skip=1; next }
         skip && /^## /        { skip=0 }
         !skip                 { print }
-    ' CLAUDE.md \
-    | sed "s|@languages/|@${PREFIX}_languages/|g" \
-    | sed "s|@tools/|@${PREFIX}_tools/|g" \
-    > "$dst"
+    ' CLAUDE.md > "$dst"
 
     ok "CLAUDE.md → ${dst}"
 }
@@ -64,7 +61,7 @@ install_claude_md() {
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
-if [[ ! -f "CLAUDE.md" ]] || [[ ! -d "languages" ]] || [[ ! -d "tools" ]]; then
+if [[ ! -f "CLAUDE.md" ]] || [[ ! -d "${PREFIX}_languages" ]] || [[ ! -d "${PREFIX}_tools" ]]; then
     echo "Error: run install.sh from the agent-ai-md project root" >&2
     exit 1
 fi
