@@ -32,11 +32,11 @@ wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/install.sh
 
 | Destination | Content |
 | --- | --- |
-| `~/.claude/ruurti_CLAUDE.md` | Global rules (identity, coding, communication) |
-| `~/.claude/ruurti_languages/` | Per-language guidelines (Python, React, Go, PHP) |
-| `~/.claude/ruurti_tools/` | Tool guides (RTK) |
+| `~/.claude/ruurti/CLAUDE.md` | Global rules (identity, coding, communication) |
+| `~/.claude/ruurti/languages/` | Per-language guidelines (Python, React, Go, PHP) |
+| `~/.claude/ruurti/tools/` | Tool guides (RTK) |
 
-`ruurti_CLAUDE.md` is wired into your existing `~/.claude/CLAUDE.md` via an `@ruurti_CLAUDE.md` mention — existing config is untouched. All installed files share the `ruurti_` prefix for easy cleanup.
+Everything goes into `~/.claude/ruurti/`. Your existing `~/.claude/CLAUDE.md` is untouched — only an `@ruurti/CLAUDE.md` mention is appended.
 
 ---
 
@@ -62,4 +62,4 @@ No `curl`? Use `wget`:
 wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/uninstall.sh | bash
 ```
 
-Removes all `ruurti_*` files/dirs from `~/.claude/` and cleans the `@ruurti_CLAUDE.md` mention from `CLAUDE.md`.
+Removes `~/.claude/ruurti/` and cleans the `@ruurti/CLAUDE.md` mention from `CLAUDE.md`.

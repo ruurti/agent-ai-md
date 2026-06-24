@@ -3,29 +3,26 @@
 # ── Config ────────────────────────────────────────────────────────────────────
 PREFIX="ruurti"
 CLAUDE_DIR="${HOME}/.claude"
-MENTION="@${PREFIX}_CLAUDE.md"
+INSTALL_DIR="${CLAUDE_DIR}/${PREFIX}"
+MENTION="@${PREFIX}/CLAUDE.md"
 
 # ── Output ────────────────────────────────────────────────────────────────────
-GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
+GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
 ok()   { echo -e "${GREEN}  ✓${NC} $*"; }
 warn() { echo -e "${YELLOW}  !${NC} $*"; }
-info() { echo -e "\033[0;36m  →${NC} $*"; }
+info() { echo -e "${CYAN}  →${NC} $*"; }
 
 echo ""
 echo "=== agent-ai-md uninstaller ==="
 echo ""
 
-# ── Remove all PREFIX_* files/dirs ───────────────────────────────────────────
-info "Removing ${PREFIX}_* from ${CLAUDE_DIR}..."
-count=0
-for entry in "${CLAUDE_DIR}/${PREFIX}_"*; do
-    [[ -e "$entry" ]] || continue
-    rm -rf "$entry"
-    ok "Removed: $entry"
-    count=$((count + 1))
-done
-if [[ $count -eq 0 ]]; then
-    warn "Nothing to remove (not installed or already uninstalled)."
+# ── Remove ~/.claude/ruurti/ ─────────────────────────────────────────────────
+info "Removing ${INSTALL_DIR}..."
+if [[ -d "$INSTALL_DIR" ]]; then
+    rm -rf "$INSTALL_DIR"
+    ok "Removed: ${INSTALL_DIR}"
+else
+    warn "Not found: ${INSTALL_DIR} (not installed or already uninstalled)."
 fi
 
 # ── Remove @mention from CLAUDE.md ────────────────────────────────────────────

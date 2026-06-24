@@ -105,24 +105,16 @@ When multiple options exist:
 2. State the main risk.
 3. Only suggest optimization when truly needed.
 
-## PROJECT CONTEXT
-
-This repo is a CLAUDE.md configuration template for AI coding assistants.
-
-* The `.md` files here are instructions/rules, not application code.
-* Purpose: push to GitHub → pull on a new machine → set up Claude Code quickly.
-* When editing files here, you are editing AI instructions, not application logic.
-
 ## Language Rules
 
-Python: @ruurti/languages/CLAUDE-python.md
-React: @ruurti/languages/CLAUDE-react.md
-Go: @ruurti/languages/CLAUDE-go.md
-PHP: @ruurti/languages/CLAUDE-php.md
+Python: @languages/CLAUDE-python.md
+React: @languages/CLAUDE-react.md
+Go: @languages/CLAUDE-go.md
+PHP: @languages/CLAUDE-php.md
 
 ## Tool Rules
 
-RTK: @ruurti/tools/RTK.md
+RTK: @tools/RTK.md
 
 ## SKILLS AWARENESS
 

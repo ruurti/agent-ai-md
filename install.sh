@@ -7,10 +7,8 @@ RAW="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
 
 PREFIX="ruurti"
 CLAUDE_DIR="${HOME}/.claude"
-LANG_DIR="${CLAUDE_DIR}/${PREFIX}_languages"
-TOOLS_DIR="${CLAUDE_DIR}/${PREFIX}_tools"
-PREFIXED_CLAUDE="${CLAUDE_DIR}/${PREFIX}_CLAUDE.md"
-MENTION="@${PREFIX}_CLAUDE.md"
+INSTALL_DIR="${CLAUDE_DIR}/${PREFIX}"
+MENTION="@${PREFIX}/CLAUDE.md"
 
 LANG_FILES=(CLAUDE-python.md CLAUDE-react.md CLAUDE-go.md CLAUDE-php.md)
 TOOL_FILES=(RTK.md)
@@ -36,52 +34,36 @@ fetch() {
     fi
 }
 
-# ── Cleanup: remove all PREFIX_* entries in ~/.claude/ ───────────────────────
+# ── Cleanup: remove ~/.claude/ruurti/ if exists ───────────────────────────────
 cleanup() {
-    local count=0
-    for entry in "${CLAUDE_DIR}/${PREFIX}_"*; do
-        [[ -e "$entry" ]] || continue
-        rm -rf "$entry"
-        ok "Removed: $entry"
-        count=$((count + 1))
-    done
-    if [[ $count -gt 0 ]]; then
-        info "Previous install cleaned ($count item(s))."
+    if [[ -d "$INSTALL_DIR" ]]; then
+        rm -rf "$INSTALL_DIR"
+        ok "Removed: ${INSTALL_DIR}"
     fi
 }
 
 # ── Install ───────────────────────────────────────────────────────────────────
 install_languages() {
-    mkdir -p "$LANG_DIR"
+    mkdir -p "${INSTALL_DIR}/languages"
     for f in "${LANG_FILES[@]}"; do
-        fetch "${PREFIX}_languages/${f}" "${LANG_DIR}/${f}"
+        fetch "${PREFIX}/languages/${f}" "${INSTALL_DIR}/languages/${f}"
     done
-    ok "Languages → ${LANG_DIR}/"
+    ok "Languages → ${INSTALL_DIR}/languages/"
 }
 
 install_tools() {
-    mkdir -p "$TOOLS_DIR"
+    mkdir -p "${INSTALL_DIR}/tools"
     for f in "${TOOL_FILES[@]}"; do
-        fetch "${PREFIX}_tools/${f}" "${TOOLS_DIR}/${f}"
+        fetch "${PREFIX}/tools/${f}" "${INSTALL_DIR}/tools/${f}"
     done
-    ok "Tools     → ${TOOLS_DIR}/"
+    ok "Tools     → ${INSTALL_DIR}/tools/"
 }
 
 install_claude_md() {
     local main="${CLAUDE_DIR}/CLAUDE.md"
-    local tmp
-    tmp="$(mktemp)" || die "Failed to create temp file."
 
-    fetch "CLAUDE.md" "$tmp"
-
-    # Strip PROJECT CONTEXT section → ruurti_CLAUDE.md
-    awk '
-        /^## PROJECT CONTEXT/ { skip=1; next }
-        skip && /^## /        { skip=0 }
-        !skip                 { print }
-    ' "$tmp" > "$PREFIXED_CLAUDE"
-    rm -f "$tmp"
-    ok "${PREFIX}_CLAUDE.md → ${PREFIXED_CLAUDE}"
+    fetch "${PREFIX}/CLAUDE.md" "${INSTALL_DIR}/CLAUDE.md"
+    ok "CLAUDE.md → ${INSTALL_DIR}/CLAUDE.md"
 
     # Wire up: add @mention to main CLAUDE.md
     if [[ -f "$main" ]]; then
@@ -103,14 +85,14 @@ echo ""
 echo "=== agent-ai-md installer ==="
 echo ""
 
-info "Cleaning ${CLAUDE_DIR}/${PREFIX}_* ..."
+info "Cleaning ${INSTALL_DIR} ..."
 cleanup
 echo ""
 
-info "Installing to ${CLAUDE_DIR}..."
+info "Installing to ${INSTALL_DIR}..."
+install_claude_md
 install_languages
 install_tools
-install_claude_md
 
 echo ""
 ok "Done. Restart Claude Code to apply changes."
