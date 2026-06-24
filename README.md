@@ -2,20 +2,6 @@
 
 Personal [Claude Code](https://claude.ai/code) configuration — identity rules, coding standards, and tool guides packed into `CLAUDE.md`.
 
-Clone → install → restart Claude Code. Done.
-
----
-
-## What gets installed
-
-| Destination | Content |
-|---|---|
-| `~/.claude/CLAUDE.md` | Global rules (identity, coding, communication) |
-| `~/.claude/ruurti_languages/` | Per-language guidelines (Python, React, Go, PHP) |
-| `~/.claude/ruurti_tools/` | Tool guides (RTK) |
-
-Files prefixed with `ruurti_` so re-running install auto-cleans previous version.
-
 ---
 
 ## Install
@@ -23,42 +9,44 @@ Files prefixed with `ruurti_` so re-running install auto-cleans previous version
 ### macOS / Linux
 
 ```bash
-git clone https://github.com/ruurti/agent-ai-md.git
-cd agent-ai-md
-./install.sh
+curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/install.sh | bash
 ```
 
-### Windows — WSL
+### Windows — WSL / Git Bash
 
 ```bash
-git clone https://github.com/ruurti/agent-ai-md.git
-cd agent-ai-md
-bash install.sh
+curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/install.sh | bash
 ```
 
-### Windows — Git Bash
+No `curl`? Use `wget`:
 
 ```bash
-git clone https://github.com/ruurti/agent-ai-md.git
-cd agent-ai-md
-bash install.sh
+wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/install.sh | bash
 ```
 
-> **Note:** Native PowerShell is not supported. Use WSL or Git Bash.
+> **Restart Claude Code** after install to apply changes.
 
-After install, **restart Claude Code** to apply changes.
+---
+
+## What gets installed
+
+| Destination | Content |
+| --- | --- |
+| `~/.claude/CLAUDE.md` | Global rules (identity, coding, communication) |
+| `~/.claude/ruurti_languages/` | Per-language guidelines (Python, React, Go, PHP) |
+| `~/.claude/ruurti_tools/` | Tool guides (RTK) |
+
+Files prefixed with `ruurti_` — re-running install auto-cleans previous version.
 
 ---
 
 ## Update
 
 ```bash
-cd agent-ai-md
-git pull
-./install.sh
+curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/install.sh | bash
 ```
 
-Re-running `install.sh` removes the previous install (`ruurti_*` glob) before copying fresh files.
+Same command. Install cleans `ruurti_*` in `~/.claude/` before copying fresh files.
 
 ---
 
@@ -72,12 +60,12 @@ cp ~/.claude/CLAUDE.md.bak ~/.claude/CLAUDE.md
 
 ---
 
-## Customize
+## Customize (fork)
 
-If forking for personal use, change the prefix in `install.sh`:
+Change the prefix in `install.sh` line 5:
 
 ```bash
-PREFIX="yourname"   # line 5
+PREFIX="yourname"
 ```
 
 Then rename the source directories to match:

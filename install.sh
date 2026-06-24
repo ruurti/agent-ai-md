@@ -2,16 +2,35 @@
 set -euo pipefail
 
 # ── Config ────────────────────────────────────────────────────────────────────
+REPO="ruurti/agent-ai-md"
+BRANCH="master"
+RAW="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
+
 PREFIX="ruurti"
 CLAUDE_DIR="${HOME}/.claude"
 LANG_DIR="${CLAUDE_DIR}/${PREFIX}_languages"
 TOOLS_DIR="${CLAUDE_DIR}/${PREFIX}_tools"
+
+LANG_FILES=(CLAUDE-python.md CLAUDE-react.md CLAUDE-go.md CLAUDE-php.md)
+TOOL_FILES=(RTK.md)
 
 # ── Output ────────────────────────────────────────────────────────────────────
 GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
 ok()   { echo -e "${GREEN}  ✓${NC} $*"; }
 warn() { echo -e "${YELLOW}  !${NC} $*"; }
 info() { echo -e "${CYAN}  →${NC} $*"; }
+
+# ── Fetch: local copy takes priority, else download from GitHub ───────────────
+fetch() {
+    local src="$1" dst="$2"
+    if [[ -f "$src" ]]; then
+        cp "$src" "$dst"
+    elif command -v curl &>/dev/null; then
+        curl -fsSL "${RAW}/${src}" -o "$dst"
+    else
+        wget -qO "$dst" "${RAW}/${src}"
+    fi
+}
 
 # ── Cleanup: remove anything matching PREFIX_* in ~/.claude/ ──────────────────
 cleanup() {
@@ -28,18 +47,26 @@ cleanup() {
 # ── Install ───────────────────────────────────────────────────────────────────
 install_languages() {
     mkdir -p "$LANG_DIR"
-    cp "${PREFIX}_languages"/*.md "$LANG_DIR/"
+    for f in "${LANG_FILES[@]}"; do
+        fetch "${PREFIX}_languages/${f}" "${LANG_DIR}/${f}"
+    done
     ok "Languages → ${LANG_DIR}/"
 }
 
 install_tools() {
     mkdir -p "$TOOLS_DIR"
-    cp "${PREFIX}_tools"/*.md "$TOOLS_DIR/"
+    for f in "${TOOL_FILES[@]}"; do
+        fetch "${PREFIX}_tools/${f}" "${TOOLS_DIR}/${f}"
+    done
     ok "Tools     → ${TOOLS_DIR}/"
 }
 
 install_claude_md() {
     local dst="${CLAUDE_DIR}/CLAUDE.md"
+    local tmp
+    tmp="$(mktemp)"
+
+    fetch "CLAUDE.md" "$tmp"
 
     # Backup original only once (skip if .bak already exists)
     if [[ -f "$dst" ]] && [[ ! -f "${dst}.bak" ]]; then
@@ -47,25 +74,18 @@ install_claude_md() {
         warn "Backed up original CLAUDE.md → ${dst}.bak"
     fi
 
-    # Strip PROJECT CONTEXT section — @references already use prefixed dirs
+    # Strip PROJECT CONTEXT section
     awk '
         /^## PROJECT CONTEXT/ { skip=1; next }
         skip && /^## /        { skip=0 }
         !skip                 { print }
-    ' CLAUDE.md > "$dst"
+    ' "$tmp" > "$dst"
 
+    rm -f "$tmp"
     ok "CLAUDE.md → ${dst}"
 }
 
 # ── Main ──────────────────────────────────────────────────────────────────────
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-cd "$SCRIPT_DIR"
-
-if [[ ! -f "CLAUDE.md" ]] || [[ ! -d "${PREFIX}_languages" ]] || [[ ! -d "${PREFIX}_tools" ]]; then
-    echo "Error: run install.sh from the agent-ai-md project root" >&2
-    exit 1
-fi
-
 echo ""
 echo "=== agent-ai-md installer ==="
 echo ""
