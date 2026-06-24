@@ -343,14 +343,15 @@ Trước khi hoàn thành task:
 * Có đánh giá edge cases.
 * Tuân thủ pattern hiện có của project.
 
-Laravel Architecture Preservation
+## Laravel Architecture Preservation
 
 Do not introduce:
-- Repository Pattern
-- Service Layer
-- DTO Layer
-- CQRS
-- DDD
+
+* Repository Pattern
+* Service Layer
+* DTO Layer
+* CQRS
+* DDD
 
 unless the existing project already uses them
 or the task explicitly requires them.

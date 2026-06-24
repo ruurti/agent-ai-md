@@ -91,7 +91,7 @@ Không:
 
 Ưu tiên:
 
-```go id="h0x9up"
+```go
 type UserReader interface {
     GetByID(ctx context.Context, id string) (*User, error)
 }
@@ -122,7 +122,7 @@ Không nhét toàn bộ hệ thống vào một struct.
 
 Mọi request-scoped operation phải nhận:
 
-```go id="3k8ukx"
+```go
 context.Context
 ```
 
@@ -139,13 +139,13 @@ Luôn xử lý error.
 
 Không:
 
-```go id="1l1j7a"
+```go
 _, _ = doSomething()
 ```
 
 Không:
 
-```go id="v4e1e7"
+```go
 if err != nil {
     panic(err)
 }
@@ -155,7 +155,7 @@ cho flow bình thường.
 
 Ưu tiên:
 
-```go id="mnzv4q"
+```go
 if err != nil {
     return fmt.Errorf("create user: %w", err)
 }
@@ -165,7 +165,7 @@ if err != nil {
 
 Khi propagate error:
 
-```go id="i4v3hg"
+```go
 fmt.Errorf("operation failed: %w", err)
 ```
 
@@ -289,7 +289,7 @@ Không dùng generics để thể hiện kỹ thuật.
 
 Ví dụ:
 
-```go id="r8pn4l"
+```go
 tests := []struct {
     name string
     input string
@@ -359,13 +359,14 @@ Trước khi hoàn thành task:
 * Tuân thủ idiomatic Go.
 * Có đánh giá edge cases.
 
-Architecture Preservation
+## Architecture Preservation
 
 Do not introduce:
-- Service layer
-- Repository layer
-- Interface abstraction
-- Generic abstraction
+
+* Service layer
+* Repository layer
+* Interface abstraction
+* Generic abstraction
 
 unless the existing codebase already uses them
 or the task explicitly requires them.

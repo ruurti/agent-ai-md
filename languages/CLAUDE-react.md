@@ -353,12 +353,12 @@ Trước khi hoàn thành task:
 * Có đánh giá edge cases.
 * Tuân thủ pattern hiện có của project.
 
-Framework Features First
+## Framework Features First
 
 Before introducing custom solutions:
 
-- Check whether React already provides it.
-- Check whether Next.js already provides it.
-- Check whether the existing project already provides it.
+* Check whether React already provides it.
+* Check whether Next.js already provides it.
+* Check whether the existing project already provides it.
 
 Prefer framework-native solutions over custom abstractions.
