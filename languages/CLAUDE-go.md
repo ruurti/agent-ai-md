@@ -2,94 +2,90 @@
 
 ## Core Principles
 
-* Tuân thủ idiomatic Go.
-* Tuân thủ Effective Go.
-* Tuân thủ Go Code Review Comments.
-* Ưu tiên đơn giản.
-* Ưu tiên readability.
-* Ưu tiên maintainability.
-* Ưu tiên consistency với codebase hiện có.
+* Follow idiomatic Go.
+* Follow Effective Go.
+* Follow Go Code Review Comments.
+* Prefer simplicity.
+* Prefer readability.
+* Prefer maintainability.
+* Prefer consistency with the existing codebase.
 
-Không mang pattern từ:
+Do not bring patterns from:
 
 * Java
 * Spring
 * C#
 * Enterprise frameworks
 
-vào Go nếu không thực sự cần.
+into Go unless truly necessary.
 
 ## Existing Codebase First
 
-Khi làm việc trong codebase hiện có:
+When working in an existing codebase:
 
-* Hiểu kiến trúc hiện tại trước khi sửa.
-* Tuân thủ convention hiện có.
-* Tuân thủ dependency boundaries hiện có.
-* Tuân thủ package structure hiện có.
+* Understand the current architecture before making changes.
+* Follow existing conventions.
+* Follow existing dependency boundaries.
+* Follow existing package structure.
 
-Không được:
+Do not:
 
-* Tự ý refactor ngoài phạm vi task.
-* Tự ý thay đổi public API.
-* Tự ý thay đổi package structure.
+* Refactor outside the task scope.
+* Change public API without being asked.
+* Change package structure without being asked.
 
-Ưu tiên:
+Prefer:
 
 * Existing patterns.
 * Existing conventions.
 
 ## Simplicity First
 
-Ưu tiên:
+Prefer:
 
 * Function.
 * Struct.
 * Package.
 
-Trước khi tạo:
+Before creating:
 
 * Interface.
 * Generic abstraction.
 * Framework layer.
 
-Nếu function đơn giản giải quyết được vấn đề:
-
-Không tạo abstraction mới.
+If a simple function solves the problem, do not create a new abstraction.
 
 ## Package Design
 
-* Package phải có trách nhiệm rõ ràng.
-* Package nên nhỏ và tập trung.
+* Packages must have a clear responsibility.
+* Packages should be small and focused.
 
-Tránh:
+Avoid turning these into dumping grounds:
 
-* utils
-* helpers
-* common
-* misc
-
-trở thành bãi chứa code.
+* `utils`
+* `helpers`
+* `common`
+* `misc`
 
 ## Interfaces
 
-Nguyên tắc:
+Principle:
 
 Accept Interfaces, Return Structs.
 
-Interface nên:
+Interfaces should be:
 
-* Nhỏ.
-* Tập trung.
-* Đặt gần nơi sử dụng.
+* Small.
+* Focused.
+* Defined close to where they are used.
 
-Không:
+Do not:
 
-* Tạo interface chỉ để mock.
-* Tạo interface chỉ có một implementation.
-* Định nghĩa interface ở package implementer.
+* Create an interface just to mock.
+* Create an interface with only one implementation.
+* Define an interface in the implementer's package.
 
-Ưu tiên:
+Prefer:
 
 ```go
 type UserReader interface {
@@ -97,53 +93,53 @@ type UserReader interface {
 }
 ```
 
-Thay vì interface lớn.
+Over large interfaces.
 
 ## Dependency Management
 
-* Dependency phải một chiều.
-* Tránh circular dependency.
-* Tránh package phụ thuộc lẫn nhau.
+* Dependencies must be one-directional.
+* Avoid circular dependencies.
+* Avoid mutually dependent packages.
 
-Nếu xuất hiện circular dependency:
+If a circular dependency appears:
 
-* Sửa kiến trúc.
-* Không workaround.
+* Fix the architecture.
+* Do not workaround.
 
 ## Struct Design
 
-* Struct phải rõ trách nhiệm.
-* Tránh struct quá lớn.
-* Tránh God Object.
+* Structs must have a clear responsibility.
+* Avoid overly large structs.
+* Avoid God Objects.
 
-Không nhét toàn bộ hệ thống vào một struct.
+Do not cram the entire system into one struct.
 
 ## Context
 
-Mọi request-scoped operation phải nhận:
+Every request-scoped operation must accept:
 
 ```go
 context.Context
 ```
 
-Context nên là tham số đầu tiên.
+Context should be the first parameter.
 
-Không:
+Do not:
 
-* Lưu context trong struct.
-* Tạo context giả không cần thiết.
+* Store context in a struct.
+* Create unnecessary fake contexts.
 
 ## Error Handling
 
-Luôn xử lý error.
+Always handle errors.
 
-Không:
+Do not:
 
 ```go
 _, _ = doSomething()
 ```
 
-Không:
+Do not:
 
 ```go
 if err != nil {
@@ -151,9 +147,9 @@ if err != nil {
 }
 ```
 
-cho flow bình thường.
+for normal flow.
 
-Ưu tiên:
+Prefer:
 
 ```go
 if err != nil {
@@ -163,136 +159,134 @@ if err != nil {
 
 ## Error Wrapping
 
-Khi propagate error:
+When propagating errors:
 
 ```go
 fmt.Errorf("operation failed: %w", err)
 ```
 
-Giữ nguyên nguyên nhân gốc.
+Preserve the original cause.
 
-Không mất stack thông tin.
+Do not lose stack information.
 
 ## Logging
 
-* Structured logging nếu project hỗ trợ.
-* Log đủ context.
-* Không log secrets.
-* Không log token.
-* Không log password.
+* Use structured logging if the project supports it.
+* Log enough context.
+* Do not log secrets.
+* Do not log tokens.
+* Do not log passwords.
 
 ## Concurrency
 
-Chỉ dùng goroutine khi có lợi ích thực tế.
+Only use goroutines when there is a real benefit.
 
-Không:
+Do not:
 
-* Goroutine vô tội vạ.
-* Fan-out không kiểm soát.
-* Spawn goroutine trong loop mà không đánh giá rủi ro.
+* Spawn goroutines arbitrarily.
+* Uncontrolled fan-out.
+* Spawn goroutines in a loop without assessing risks.
 
-Luôn xem xét:
+Always consider:
 
-* Goroutine leak.
-* Deadlock.
-* Race condition.
+* Goroutine leaks.
+* Deadlocks.
+* Race conditions.
 
 ## Channels
 
-Dùng channel cho communication.
+Use channels for communication.
 
-Không dùng channel thay mutex chỉ vì sở thích.
+Do not use channels instead of mutexes just out of preference.
 
-Chọn công cụ đơn giản nhất:
+Choose the simplest tool:
 
-* Mutex khi phù hợp.
-* Channel khi phù hợp.
+* Mutex when appropriate.
+* Channel when appropriate.
 
 ## Synchronization
 
-Đánh giá:
+Assess before completing a task:
 
-* Race condition.
-* Deadlock.
-* Resource leak.
-
-Trước khi hoàn thành task.
+* Race conditions.
+* Deadlocks.
+* Resource leaks.
 
 ## Database
 
-* Tránh N+1 query.
-* Tránh query trong loop.
-* Transaction phải rõ ràng.
-* Validation không thay thế constraint database.
+* Avoid N+1 queries.
+* Avoid queries inside loops.
+* Transactions must be explicit.
+* Validation does not replace database constraints.
 
 ## HTTP Handlers
 
-Handler nên:
+Handlers should be:
 
-* Mỏng.
-* Tập trung vào HTTP concerns.
+* Thin.
+* Focused on HTTP concerns.
 
-Không nhét business logic lớn vào handler.
+Do not embed large business logic in handlers.
 
-Ưu tiên:
+Prefer:
 
-Handler -> Service -> Repository
+Handler → Service → Repository
 
 ## Business Logic
 
-Business logic không nằm trong:
+Business logic must not live in:
 
-* HTTP handler.
+* HTTP handlers.
 * Transport layer.
 * Infrastructure layer.
 
-Tách riêng logic nghiệp vụ.
+Keep business logic separate.
 
 ## Configuration
 
-Không hardcode:
+Do not hardcode:
 
-* URL
-* Host
-* Port
+* URLs
+* Hosts
+* Ports
 * Credentials
 * API keys
 * Environment-specific values
 
-Ưu tiên:
+Prefer:
 
 * Environment variables
 * Config files
 
 ## Paths
 
-Không hardcode:
+Do not hardcode:
 
-* Absolute path
-* Machine-specific path
-* Local development path
+* Absolute paths
+* Machine-specific paths
+* Local development paths
 
 ## Generics
 
-Chỉ dùng generics khi:
+Only use generics when:
 
-* Thực sự giảm duplication.
-* Tăng readability.
+* They genuinely reduce duplication.
+* They improve readability.
 
-Không dùng generics để thể hiện kỹ thuật.
+Do not use generics to show off.
 
 ## Testing
 
-Ưu tiên:
+Prefer:
 
 * Table-driven tests.
 
-Ví dụ:
+Example:
 
 ```go
 tests := []struct {
-    name string
-    input string
+    name     string
+    input    string
     expected string
 }{
     ...
@@ -305,59 +299,59 @@ Test:
 * Edge cases.
 * Error cases.
 
-Không test implementation detail.
+Do not test implementation details.
 
 ## Benchmarks
 
-Benchmark trước khi tối ưu.
+Benchmark before optimizing.
 
-Không tối ưu dựa trên cảm giác.
+Do not optimize based on intuition.
 
 ## AI Safety Rules
 
-Trước khi viết code:
+Before writing code:
 
-* Tìm package tương tự.
-* Tìm service tương tự.
-* Tìm repository tương tự.
-* Tìm pattern hiện có.
+* Look for similar packages.
+* Look for similar services.
+* Look for similar repositories.
+* Look for existing patterns.
 
-Ưu tiên tái sử dụng.
+Prefer reuse.
 
-Không được:
+Do not:
 
-* Hardcode dữ liệu.
+* Hardcode data.
 * Hardcode config.
 * Hardcode business rules.
 * Hardcode permissions.
 * Hardcode feature flags.
-* Copy-paste logic giữa packages.
+* Copy-paste logic between packages.
 
 ## Large Repository Safety
 
-Khi làm việc trong monorepo hoặc codebase lớn:
+When working in a monorepo or large codebase:
 
-* Hiểu dependency graph trước khi sửa.
-* Chỉ sửa phạm vi liên quan đến task.
-* Không refactor ngoài phạm vi yêu cầu.
-* Không đổi package structure nếu không được yêu cầu.
-* Không đổi public API nếu không được yêu cầu.
-* Cảnh báo nếu thay đổi có thể ảnh hưởng package khác.
+* Understand the dependency graph before making changes.
+* Only modify what is relevant to the task.
+* Do not refactor outside the required scope.
+* Do not change package structure unless asked.
+* Do not change public API unless asked.
+* Warn if a change may affect other packages.
 
 ## Completion Checklist
 
-Trước khi hoàn thành task:
+Before completing a task:
 
-* Không có circular dependency.
-* Không có hardcode.
-* Không có goroutine leak.
-* Không có race condition rõ ràng.
-* Không có duplicate logic.
-* Không vi phạm package boundary.
-* Error được xử lý đúng.
-* Context được truyền đúng.
-* Tuân thủ idiomatic Go.
-* Có đánh giá edge cases.
+* No circular dependencies.
+* No hardcoded values.
+* No goroutine leaks.
+* No obvious race conditions.
+* No duplicate logic.
+* No package boundary violations.
+* Errors handled correctly.
+* Context passed correctly.
+* Follows idiomatic Go.
+* Edge cases evaluated.
 
 ## Architecture Preservation
 

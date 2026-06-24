@@ -2,147 +2,145 @@
 
 ## Core Principles
 
-* Tuân thủ code style hiện có của project.
-* Ưu tiên readability.
-* Ưu tiên maintainability.
-* Ưu tiên consistency.
-* Ưu tiên giải pháp đơn giản nhất hoạt động được.
-* Không tối ưu sớm.
-* Không over-engineering.
+* Follow the project's existing code style.
+* Prioritize readability.
+* Prioritize maintainability.
+* Prioritize consistency.
+* Simplest solution that works.
+* No premature optimization.
+* No over-engineering.
 
 ## Existing Codebase First
 
-Khi làm việc trong codebase hiện có:
+When working in an existing codebase:
 
-* Hiểu pattern hiện tại trước khi sửa.
-* Tuân thủ convention hiện có.
-* Tuân thủ cấu trúc thư mục hiện có.
-* Tuân thủ state management hiện có.
-* Tuân thủ data fetching pattern hiện có.
+* Understand current patterns before making changes.
+* Follow existing conventions.
+* Follow existing directory structure.
+* Follow existing state management.
+* Follow existing data fetching patterns.
 
-Không được:
+Do not:
 
-* Tự ý đổi kiến trúc.
-* Tự ý đổi state management.
-* Tự ý đổi UI framework.
-* Tự ý refactor ngoài phạm vi task.
+* Change architecture without being asked.
+* Change state management without being asked.
+* Change UI framework without being asked.
+* Refactor outside the task scope.
 
-Ưu tiên:
+Prefer:
 
-* Consistency hơn sở thích cá nhân.
-* Existing pattern hơn pattern mới.
+* Consistency over personal preference.
+* Existing patterns over new ones.
 
 ## Component Design
 
-* Một component chỉ nên có một trách nhiệm chính.
-* Component phải dễ đọc.
-* Component phải dễ test.
-* Component phải dễ tái sử dụng.
+* A component should have one primary responsibility.
+* Components must be readable.
+* Components must be testable.
+* Components must be reusable.
 
-Tránh:
+Avoid:
 
-* God Component.
-* Component quá dài.
-* Component xử lý quá nhiều business logic.
+* God Components.
+* Overly long components.
+* Components handling too much business logic.
 
-Nếu component trở nên phức tạp:
+If a component becomes complex:
 
-* Tách thành component nhỏ hơn.
-* Hoặc tách logic thành custom hook.
+* Split into smaller components.
+* Or extract logic into a custom hook.
 
 ## State Management
 
-Ưu tiên:
+Prefer in this order:
 
 1. Local State
 2. Lift State Up
 3. Context
 4. Global State
 
-Không đưa state lên global nếu local state là đủ.
+Do not promote state to global if local state is sufficient.
 
-Không tạo global state chỉ để chia sẻ cho một vài component.
+Do not create global state just to share with a few components.
 
 ## State Ownership
 
-State nên nằm gần nơi sử dụng nhất.
+State should live as close to where it is used as possible.
 
-Không:
+Do not:
 
 * Duplicate state.
-* Mirror state không cần thiết.
-* Copy props vào state nếu không có lý do rõ ràng.
+* Mirror state unnecessarily.
+* Copy props into state without a clear reason.
 
 ## Hooks
 
-Tuân thủ Rules of Hooks.
+Follow the Rules of Hooks.
 
-Không:
+Do not:
 
-* Gọi hook trong condition.
-* Gọi hook trong loop.
-* Gọi hook trong nested function.
+* Call hooks inside conditions.
+* Call hooks inside loops.
+* Call hooks inside nested functions.
 
 ## useEffect Rules
 
-Không dùng useEffect cho:
+Do not use `useEffect` for:
 
 * Derived state.
-* Data transformation đơn giản.
-* Computation đơn giản.
-* Đồng bộ state không cần thiết.
+* Simple data transformation.
+* Simple computation.
+* Unnecessary state synchronization.
 
-Trước khi viết useEffect:
+Before writing a `useEffect`, ask:
 
-Hỏi:
+* Is this truly a side effect?
+* Can this be solved with state or props?
 
-* Có thực sự là side effect không?
-* Có thể giải quyết bằng state hoặc props không?
-
-Ưu tiên loại bỏ useEffect nếu không cần.
+Prefer eliminating `useEffect` when not needed.
 
 ## Custom Hooks
 
-Chỉ tạo custom hook khi:
+Only create a custom hook when:
 
-* Logic được tái sử dụng.
-* Logic đủ phức tạp.
+* Logic is reused.
+* Logic is complex enough.
 
-Không tạo custom hook cho logic quá nhỏ.
+Do not create a custom hook for trivial logic.
 
-Không tạo hook chỉ để bọc vài dòng code.
+Do not create a hook just to wrap a few lines of code.
 
 ## Data Fetching
 
-Ưu tiên data fetching solution hiện có trong project.
+Prefer the existing data fetching solution in the project.
 
-Nếu project sử dụng:
+If the project uses:
 
 * TanStack Query
 * React Query
 * SWR
 
-Thì tiếp tục sử dụng.
+Continue using it.
 
-Không tự viết:
+Do not write your own:
 
 * Cache layer
 * Retry mechanism
 * Loading manager
 
-Nếu framework đã hỗ trợ.
+If the framework already provides it.
 
 ## API Layer
 
-Không gọi API trực tiếp trong nhiều component.
+Do not call the API directly from multiple components.
 
-Ưu tiên:
+Prefer:
 
 * API client
 * Service layer
 * Query layer
 
-Tách biệt:
+Separate:
 
 * UI
 * Fetching
@@ -150,145 +148,149 @@ Tách biệt:
 
 ## Business Logic
 
-Không nhúng business logic phức tạp vào component.
+Do not embed complex business logic in components.
 
-Ưu tiên:
+Prefer:
 
 * Services
 * Utilities
 * Custom hooks
 
-Component nên tập trung vào rendering.
+Components should focus on rendering.
 
 ## Forms
 
-Ưu tiên pattern hiện có của project.
+Prefer the project's existing form pattern.
 
-Không:
+Do not:
 
-* Tự viết form framework.
+* Write your own form framework.
 * Duplicate validation logic.
 
-Validation nên có:
+Validation should include:
 
 * Client side
 * Server side
 
 ## Performance
 
-Không dùng:
+Do not use:
 
-* useMemo
-* useCallback
-* memo
+* `useMemo`
+* `useCallback`
+* `memo`
 
-Theo mặc định.
+By default.
 
-Chỉ sử dụng khi:
+Only use when:
 
-* Có vấn đề thực tế.
-* Có profiling chứng minh.
+* There is a real measured problem.
+* Profiling confirms it.
 
-Không memo hóa mọi thứ.
+Do not memoize everything.
 
 ## Rendering
 
-Tránh:
+Avoid:
 
-* Re-render không cần thiết.
-* Computation nặng trong render.
-* Inline object phức tạp.
-* Inline function phức tạp.
+* Unnecessary re-renders.
+* Heavy computation during render.
+* Complex inline objects.
+* Complex inline functions.
 
-Ưu tiên code dễ đọc trước.
+Prefer readable code first.
 
 ## Component Communication
 
-Ưu tiên:
+Prefer:
 
 * Props
 * Context
 * State Management
 
-Không:
+Do not use:
 
-* Event bus tùy tiện.
+* Arbitrary event buses.
 * Shared mutable state.
-* Global singleton không cần thiết.
+* Unnecessary global singletons.
 
 ## Module Boundaries
 
-Tôn trọng module boundaries hiện có.
+Respect existing module boundaries.
 
-Không:
+Do not:
 
-* Import xuyên tầng.
-* Import internal implementation.
-* Truy cập private modules.
+* Import across layers.
+* Import internal implementations.
+* Access private modules.
 
-Ưu tiên:
+Prefer:
 
-* Public API.
+* Public APIs.
 * Shared contracts.
 
 ## Imports
 
-* Tuân thủ convention hiện có.
-* Không tạo dependency vòng.
-* Không import từ deep internal path nếu project đã có public export.
+* Follow existing conventions.
+* Do not create circular dependencies.
+* Do not import from deep internal paths if the project already has a public export.
 
-Ví dụ tránh:
+Avoid:
 
+```ts
 import "../../../../../feature/internal/component"
+```
 
-Ưu tiên:
+Prefer:
 
+```ts
 import { UserCard } from "@/features/user"
+```
 
 ## Styling
 
-Tuân thủ giải pháp hiện có:
+Follow the existing solution:
 
 * Tailwind
 * CSS Modules
 * Styled Components
 * Emotion
 
-Không trộn nhiều styling strategy.
+Do not mix multiple styling strategies.
 
-Không tạo strategy mới nếu không cần.
+Do not create a new strategy unless necessary.
 
 ## Error Handling
 
-Mọi async operation phải có:
+Every async operation must have:
 
 * Error handling
 * Loading state
 
-Không:
+Do not:
 
-* Ignore error
+* Ignore errors
 * Silent failure
 
 ## UX Rules
 
-Mọi màn hình nên xử lý:
+Every screen should handle:
 
 * Loading state
 * Error state
 * Empty state
 
-Không giả định dữ liệu luôn tồn tại.
+Do not assume data always exists.
 
 ## Accessibility
 
-Ưu tiên:
+Prefer:
 
 * Semantic HTML
 * Accessible form labels
 * Keyboard navigation
 
-Không hy sinh accessibility vì tốc độ phát triển.
+Do not sacrifice accessibility for development speed.
 
 ## Testing
 
@@ -298,60 +300,60 @@ Test:
 * Business behavior
 * User interaction
 
-Không test:
+Do not test:
 
 * Internal implementation
 * Hook internals
 * State internals
 
-Ưu tiên:
+Prefer:
 
 * React Testing Library
 
 ## AI Safety Rules
 
-Trước khi sửa code:
+Before modifying code:
 
-* Tìm pattern hiện có.
-* Tìm component tương tự.
-* Tìm hook tương tự.
-* Tìm service tương tự.
+* Look for existing patterns.
+* Look for similar components.
+* Look for similar hooks.
+* Look for similar services.
 
-Ưu tiên tái sử dụng.
+Prefer reuse.
 
-Không được:
+Do not:
 
-* Hardcode dữ liệu.
-* Hardcode API response.
-* Hardcode business rule.
-* Hardcode role permission.
-* Hardcode feature flag.
-* Copy-paste logic giữa các component.
+* Hardcode data.
+* Hardcode API responses.
+* Hardcode business rules.
+* Hardcode role permissions.
+* Hardcode feature flags.
+* Copy-paste logic between components.
 
 ## Large Repository Safety
 
-Khi làm việc trong monorepo hoặc codebase lớn:
+When working in a monorepo or large codebase:
 
-* Hiểu dependency graph trước khi sửa.
-* Chỉ sửa phạm vi liên quan đến task.
-* Không refactor ngoài phạm vi yêu cầu.
-* Không đổi public API nếu không được yêu cầu.
-* Cảnh báo nếu thay đổi có thể ảnh hưởng module khác.
+* Understand the dependency graph before making changes.
+* Only modify what is relevant to the task.
+* Do not refactor outside the required scope.
+* Do not change public API unless asked.
+* Warn if a change may affect other modules.
 
 ## Completion Checklist
 
-Trước khi hoàn thành task:
+Before completing a task:
 
-* Không có state dư thừa.
-* Không có useEffect không cần thiết.
-* Không có duplicate logic.
-* Không có hardcode.
-* Không có dependency vòng.
-* Không vi phạm module boundary.
-* Có loading state phù hợp.
-* Có error state phù hợp.
-* Có đánh giá edge cases.
-* Tuân thủ pattern hiện có của project.
+* No redundant state.
+* No unnecessary `useEffect`.
+* No duplicate logic.
+* No hardcoded values.
+* No circular dependencies.
+* No module boundary violations.
+* Appropriate loading state.
+* Appropriate error state.
+* Edge cases evaluated.
+* Follows existing project patterns.
 
 ## Framework Features First
 

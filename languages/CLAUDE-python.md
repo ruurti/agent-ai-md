@@ -2,46 +2,46 @@
 
 ## Core Principles
 
-* Tuân thủ PEP8.
-* Tuân thủ Clean Code.
-* Ưu tiên readability hơn clever code.
-* Ưu tiên maintainability hơn tối ưu hóa sớm.
-* Ưu tiên giải pháp đơn giản nhất đáp ứng yêu cầu.
-* Tính đúng đắn quan trọng hơn hiệu năng.
-* Hiệu năng chỉ được tối ưu khi có bằng chứng hoặc yêu cầu rõ ràng.
+* Follow PEP8.
+* Follow Clean Code principles.
+* Readability over clever code.
+* Maintainability over premature optimization.
+* Simplest solution that meets requirements.
+* Correctness over performance.
+* Optimize performance only when there is evidence or an explicit requirement.
 
 ## Existing Codebase First
 
-Khi làm việc trong codebase hiện có:
+When working in an existing codebase:
 
-* Hiểu kiến trúc hiện tại trước khi sửa.
-* Tuân thủ pattern đang được sử dụng.
-* Tuân thủ convention hiện có của project.
-* Tuân thủ dependency boundaries hiện có.
-* Ưu tiên consistency hơn sở thích cá nhân.
+* Understand the current architecture before making changes.
+* Follow existing patterns.
+* Follow existing project conventions.
+* Follow existing dependency boundaries.
+* Prefer consistency over personal preference.
 
-Không được:
+Do not:
 
-* Tự ý thay đổi kiến trúc.
-* Tự ý đổi naming convention.
-* Tự ý refactor ngoài phạm vi task.
-* Tự ý thay đổi public API.
+* Change architecture without being asked.
+* Change naming conventions without being asked.
+* Refactor outside the task scope.
+* Change public API without being asked.
 
 ## Code Structure
 
-* Mỗi module chỉ nên có một trách nhiệm chính.
-* Mỗi function chỉ nên có một trách nhiệm rõ ràng.
-* Tránh function quá dài.
-* Tránh class quá lớn.
-* Ưu tiên composition hơn inheritance.
-* Tránh abstraction sớm.
-* Tránh tạo helper chỉ dùng một lần.
-* Tránh tạo class khi function là đủ.
+* Each module should have one primary responsibility.
+* Each function should have one clear responsibility.
+* Avoid overly long functions.
+* Avoid overly large classes.
+* Prefer composition over inheritance.
+* Avoid premature abstraction.
+* Avoid creating helpers used only once.
+* Avoid creating a class when a function is sufficient.
 
 ## Naming
 
-* Tên phải mô tả đúng mục đích.
-* Không dùng tên mơ hồ như:
+* Names must accurately describe their purpose.
+* Do not use vague names such as:
 
   * data
   * obj
@@ -50,52 +50,52 @@ Không được:
   * result
   * value
 
-Trừ khi ngữ cảnh thực sự rõ ràng.
+Unless the context is truly unambiguous.
 
 ## Clean Code
 
-* Ưu tiên early return.
-* Tránh nested condition quá sâu.
-* Tránh duplicate logic.
-* Tránh side effects không rõ ràng.
-* Tránh hàm làm nhiều việc.
-* Tránh boolean flag làm thay đổi nhiều hành vi trong cùng một function.
+* Prefer early return.
+* Avoid deeply nested conditions.
+* Avoid duplicate logic.
+* Avoid unclear side effects.
+* Avoid functions that do too many things.
+* Avoid boolean flags that change multiple behaviors in the same function.
 
 ## Imports
 
-* Import phải ở đầu file.
-* Không import bên trong function.
+* Imports must be at the top of the file.
+* Do not import inside a function.
 
-Chỉ ngoại lệ khi:
+Exceptions only when:
 
-* Lazy loading là cần thiết.
-* Dependency rất nặng.
-* Đã xác nhận nguyên nhân circular dependency.
+* Lazy loading is necessary.
+* Dependency is very heavy.
+* A confirmed circular dependency reason exists.
 
-Không dùng import trong function để che giấu lỗi kiến trúc.
+Do not use in-function imports to hide architectural flaws.
 
 ## Dependency Management
 
-* Tránh circular import.
-* Tránh dependency ngược chiều giữa các layer.
-* Ưu tiên dependency một chiều.
-* Nếu phát hiện circular dependency:
+* Avoid circular imports.
+* Avoid reverse dependencies between layers.
+* Prefer one-directional dependency.
+* If a circular dependency is detected:
 
-  * Phân tích nguyên nhân kiến trúc.
-  * Refactor dependency graph.
-  * Không giải quyết bằng workaround tạm thời.
+  * Analyze the architectural root cause.
+  * Refactor the dependency graph.
+  * Do not resolve with temporary workarounds.
 
 ## Module Boundaries
 
-* Tôn trọng ranh giới module.
-* Không truy cập internal implementation của module khác.
-* Chỉ sử dụng public API.
-* Không tạo dependency mới giữa các module độc lập nếu không thực sự cần.
-* Không kéo business logic xuyên nhiều module.
+* Respect module boundaries.
+* Do not access the internal implementation of another module.
+* Only use public APIs.
+* Do not create new dependencies between independent modules unless truly necessary.
+* Do not pull business logic across multiple modules.
 
 ## Layer Separation
 
-Tách biệt rõ:
+Clearly separate:
 
 * API Layer
 * Service Layer
@@ -103,85 +103,85 @@ Tách biệt rõ:
 * Repository Layer
 * Infrastructure Layer
 
-Không để:
+Do not let:
 
-* API xử lý business logic.
-* Repository chứa business logic.
-* Infrastructure điều khiển flow nghiệp vụ.
+* API handle business logic.
+* Repository contain business logic.
+* Infrastructure control business flow.
 
 ## Paths And Files
 
-* Không hardcode absolute path.
-* Không hardcode path phụ thuộc môi trường.
-* Ưu tiên pathlib.Path.
-* Cấu hình phải lấy từ config hoặc environment variables.
+* Do not hardcode absolute paths.
+* Do not hardcode environment-dependent paths.
+* Prefer `pathlib.Path`.
+* Configuration must come from config files or environment variables.
 
-Không được:
+Do not:
 
-* Hardcode đường dẫn local.
-* Hardcode username.
+* Hardcode local paths.
+* Hardcode usernames.
 * Hardcode machine-specific configuration.
 
 ## Configuration
 
-Tất cả giá trị thay đổi theo môi trường phải nằm trong:
+All values that change per environment must be in:
 
-* Config file
+* Config files
 * Environment variables
-* Secret manager
+* Secret managers
 
-Không hardcode:
+Do not hardcode:
 
-* URL
-* API key
-* Token
-* Password
-* Hostname
-* Port
+* URLs
+* API keys
+* Tokens
+* Passwords
+* Hostnames
+* Ports
 * Business configuration
 
 ## Type Hints
 
-* Sử dụng type hints cho public API.
+* Use type hints for public APIs.
 
-* Ưu tiên typing hiện đại:
+* Prefer modern typing:
 
-  * list[str]
-  * dict[str, Any]
-  * tuple[str, int]
+  * `list[str]`
+  * `dict[str, Any]`
+  * `tuple[str, int]`
 
-* Không tạo type phức tạp làm giảm readability.
+* Do not create complex types that reduce readability.
 
-* Type phải hỗ trợ maintainability.
+* Types must support maintainability.
 
 ## Dataclasses And Models
 
-Ưu tiên:
+Prefer:
 
-* dataclass cho DTO đơn giản.
-* Pydantic cho validation và schema.
+* `dataclass` for simple DTOs.
+* Pydantic for validation and schema.
 
-Không tạo class chỉ để chứa dữ liệu đơn giản nếu dataclass đã đủ.
+Do not create a class just to hold simple data if a dataclass is sufficient.
 
 ## Error Handling
 
-* Không bỏ qua exception.
-* Không dùng bare except.
-* Không swallow exception.
+* Do not ignore exceptions.
+* Do not use bare `except`.
+* Do not swallow exceptions.
 
-Luôn:
+Always:
 
-* Bắt exception cụ thể.
-* Log đầy đủ context cần thiết.
-* Preserve stack trace khi phù hợp.
+* Catch specific exceptions.
+* Log sufficient context.
+* Preserve the stack trace when appropriate.
 
-Ưu tiên:
+Prefer:
 
 ```python
 except SpecificError as exc:
 ```
 
-Tránh:
+Avoid:
 
 ```python
 except:
@@ -189,35 +189,35 @@ except:
 
 ## Logging
 
-* Logging thay vì print trong production code.
-* Log đủ context để debug.
-* Không log secrets.
-* Không log credentials.
-* Không log token.
+* Use logging instead of print in production code.
+* Log enough context for debugging.
+* Do not log secrets.
+* Do not log credentials.
+* Do not log tokens.
 
 ## Async Programming
 
-* Chỉ dùng async khi có lợi ích rõ ràng.
-* Không chuyển code sang async chỉ vì xu hướng.
-* Không trộn sync và async một cách tùy tiện.
-* Quản lý timeout rõ ràng.
+* Only use async when there is a clear benefit.
+* Do not convert code to async just because it is trending.
+* Do not mix sync and async arbitrarily.
+* Manage timeouts explicitly.
 
 ## Database
 
-* Tránh N+1 query.
-* Tránh query trong loop.
-* Sử dụng transaction khi cần.
-* Validation không thay thế constraint của database.
+* Avoid N+1 queries.
+* Avoid queries inside loops.
+* Use transactions when needed.
+* Validation does not replace database constraints.
 
 ## Testing
 
-Ưu tiên pytest.
+Prefer pytest.
 
-Test phải:
+Tests must be:
 
-* Độc lập.
-* Dễ đọc.
-* Có thể lặp lại.
+* Independent.
+* Readable.
+* Repeatable.
 
 Test:
 
@@ -225,45 +225,45 @@ Test:
 * Business rules.
 * Edge cases.
 
-Không test:
+Do not test:
 
 * Internal implementation.
-* Chi tiết không ảnh hưởng hành vi.
+* Details that do not affect behavior.
 
 ## Performance
 
-* Đo đạc trước khi tối ưu.
-* Benchmark trước khi tối ưu.
-* Profile trước khi tối ưu.
+* Measure before optimizing.
+* Benchmark before optimizing.
+* Profile before optimizing.
 
-Không:
+Do not:
 
-* Tối ưu theo cảm tính.
-* Hy sinh readability để tối ưu sớm.
+* Optimize based on intuition.
+* Sacrifice readability for premature optimization.
 
 ## AI Safety Rules
 
-Trước khi viết code:
+Before writing code:
 
-* Tìm implementation hiện có.
-* Tìm utility hiện có.
-* Tìm service hiện có.
-* Tìm pattern hiện có.
+* Look for existing implementations.
+* Look for existing utilities.
+* Look for existing services.
+* Look for existing patterns.
 
-Ưu tiên tái sử dụng.
+Prefer reuse.
 
-Không được:
+Do not:
 
-* Hardcode dữ liệu để pass test.
+* Hardcode data to pass tests.
 * Hardcode business rules.
 * Hardcode config.
-* Hardcode response giả.
-* Hardcode URL.
+* Hardcode fake responses.
+* Hardcode URLs.
 * Hardcode credentials.
-* Copy-paste logic giữa các module.
-* Viết workaround che giấu bug.
+* Copy-paste logic between modules.
+* Write workarounds that hide bugs.
 
-Luôn ưu tiên:
+Always prefer:
 
 * Root cause fix.
 * Reusable solution.
@@ -271,30 +271,30 @@ Luôn ưu tiên:
 
 ## Large Repository Safety
 
-Khi làm việc trong monorepo hoặc codebase lớn:
+When working in a monorepo or large codebase:
 
-* Hiểu dependency graph trước khi sửa.
-* Chỉ sửa phạm vi liên quan đến task.
-* Không refactor ngoài phạm vi yêu cầu.
-* Không đổi tên package nếu không được yêu cầu.
-* Không đổi public API nếu không được yêu cầu.
-* Cảnh báo nếu thay đổi có thể ảnh hưởng module khác.
+* Understand the dependency graph before making changes.
+* Only modify what is relevant to the task.
+* Do not refactor outside the required scope.
+* Do not rename packages unless asked.
+* Do not change public API unless asked.
+* Warn if a change may affect other modules.
 
 ## Completion Checklist
 
-Trước khi hoàn thành task:
+Before completing a task:
 
-* Tuân thủ PEP8.
-* Không có circular import.
-* Không import trong function.
-* Không hardcode.
-* Không duplicate logic.
-* Không vi phạm module boundary.
-* Không tạo dependency không cần thiết.
-* Có xử lý lỗi phù hợp.
-* Có type hints phù hợp.
-* Có test impact assessment.
-* Có đánh giá edge cases.
+* PEP8 compliant.
+* No circular imports.
+* No imports inside functions.
+* No hardcoded values.
+* No duplicate logic.
+* No module boundary violations.
+* No unnecessary dependencies.
+* Appropriate error handling.
+* Appropriate type hints.
+* Test impact assessment done.
+* Edge cases evaluated.
 
 When modifying existing code:
 Prefer extending existing patterns over introducing new patterns.

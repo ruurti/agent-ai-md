@@ -2,16 +2,16 @@
 
 ## Core Principles
 
-* Tuân thủ PSR standards.
-* Tuân thủ Clean Code.
-* Ưu tiên readability.
-* Ưu tiên maintainability.
-* Ưu tiên consistency với codebase hiện có.
-* Ưu tiên giải pháp đơn giản nhất hoạt động được.
+* Follow PSR standards.
+* Follow Clean Code principles.
+* Prioritize readability.
+* Prioritize maintainability.
+* Prioritize consistency with the existing codebase.
+* Simplest solution that works.
 
-Không viết code theo phong cách PHP cũ nếu project đang dùng PHP hiện đại.
+Do not write code in an old PHP style if the project uses modern PHP.
 
-Ưu tiên:
+Prefer:
 
 * PHP 8+
 * Strict typing
@@ -22,164 +22,164 @@ Không viết code theo phong cách PHP cũ nếu project đang dùng PHP hiện
 
 ## Existing Codebase First
 
-Khi làm việc trong codebase hiện có:
+When working in an existing codebase:
 
-* Hiểu kiến trúc hiện tại trước khi sửa.
-* Tuân thủ convention hiện có.
-* Tuân thủ framework conventions.
-* Tuân thủ dependency boundaries hiện có.
+* Understand the current architecture before making changes.
+* Follow existing conventions.
+* Follow framework conventions.
+* Follow existing dependency boundaries.
 
-Không được:
+Do not:
 
-* Tự ý đổi kiến trúc.
-* Tự ý refactor ngoài phạm vi task.
-* Tự ý đổi public API.
-* Tự ý đổi framework pattern.
+* Change architecture without being asked.
+* Refactor outside the task scope.
+* Change public API without being asked.
+* Change framework patterns without being asked.
 
-Ưu tiên:
+Prefer:
 
 * Existing patterns.
 * Existing conventions.
 
 ## Strict Types
 
-Mọi file mới:
+Every new file must have:
 
 ```php
 declare(strict_types=1);
 ```
 
-Ưu tiên type declarations đầy đủ.
+Prefer full type declarations.
 
-Không dùng mixed nếu có thể xác định kiểu.
+Do not use `mixed` if the type can be determined.
 
 ## Naming
 
-* Tên class rõ ràng.
-* Tên method rõ ràng.
-* Tên biến rõ ràng.
+* Class names must be clear.
+* Method names must be clear.
+* Variable names must be clear.
 
-Không dùng:
+Do not use:
 
-* data
-* value
-* temp
-* item
-* result
+* `data`
+* `value`
+* `temp`
+* `item`
+* `result`
 
-trừ khi ngữ cảnh thực sự rõ ràng.
+unless the context is truly unambiguous.
 
 ## Class Design
 
-* Mỗi class có một trách nhiệm chính.
-* Tránh God Class.
-* Tránh Utility Class khổng lồ.
-* Tránh Service làm mọi thứ.
+* Each class has one primary responsibility.
+* Avoid God Classes.
+* Avoid giant Utility Classes.
+* Avoid Services that do everything.
 
-Ưu tiên:
+Prefer:
 
-* Cohesion cao.
-* Trách nhiệm rõ ràng.
+* High cohesion.
+* Clear responsibility.
 
 ## Dependency Injection
 
-Ưu tiên Dependency Injection.
+Prefer Dependency Injection.
 
-Không:
+Do not:
 
-* new object sâu trong business logic.
-* service locator tùy tiện.
-* dependency ẩn.
+* Instantiate objects deep inside business logic.
+* Use arbitrary service locators.
+* Hide dependencies.
 
-Dependency phải rõ ràng qua constructor.
+Dependencies must be explicit via the constructor.
 
 ## Interfaces
 
-Chỉ tạo interface khi:
+Only create an interface when:
 
-* Có nhiều implementation.
-* Có nhu cầu abstraction thực tế.
-* Kiến trúc hiện có yêu cầu.
+* There are multiple implementations.
+* There is a real abstraction need.
+* The existing architecture requires it.
 
-Không tạo interface chỉ để tạo interface.
+Do not create interfaces just to create interfaces.
 
 ## Controllers
 
-Controller phải mỏng.
+Controllers must be thin.
 
-Controller chỉ nên:
+Controllers should only:
 
-* Validate request.
-* Gọi service/use case.
-* Trả response.
+* Validate the request.
+* Call a service/use case.
+* Return a response.
 
-Không:
+Do not:
 
-* Chứa business logic lớn.
-* Chứa query phức tạp.
-* Chứa workflow nghiệp vụ.
+* Contain large business logic.
+* Contain complex queries.
+* Contain business workflow.
 
 ## Business Logic
 
-Business logic không nằm trong:
+Business logic must not live in:
 
-* Controller
+* Controllers
 * Middleware
-* Command
-* Job
+* Commands
+* Jobs
 
-Business logic nên nằm trong:
+Business logic should live in:
 
-* Service
-* Use Case
+* Services
+* Use Cases
 * Domain Layer
 
-theo kiến trúc hiện có của project.
+following the project's existing architecture.
 
 ## Database
 
-Không:
+Do not:
 
-* Query trong loop.
-* N+1 query.
-* Duplicate query.
+* Query inside loops.
+* N+1 queries.
+* Duplicate queries.
 
-Luôn cân nhắc:
+Always consider:
 
 * Eager loading.
 * Query optimization.
-* Transaction.
+* Transactions.
 
-Validation không thay thế database constraints.
+Validation does not replace database constraints.
 
 ## Eloquent / ORM
 
-Ưu tiên:
+Prefer:
 
 * Relationships.
 * Scopes.
 * Query Builder.
 
-Không:
+Do not:
 
-* Raw SQL khi ORM đã giải quyết tốt.
-* Business logic trong model.
+* Use raw SQL when ORM handles it well.
+* Put business logic in models.
 
-Tránh biến model thành God Object.
+Avoid turning models into God Objects.
 
 ## Laravel Specific
 
-Tuân thủ convention của Laravel.
+Follow Laravel conventions.
 
-Ưu tiên:
+Prefer:
 
-* Form Request
-* Service Layer (nếu project đang dùng)
-* Resource
+* Form Requests
+* Service Layer (if the project already uses it)
+* Resources
 * Events
 * Jobs
 
-Không lạm dụng:
+Do not overuse:
 
 * Facades
 * Global helpers
@@ -187,76 +187,76 @@ Không lạm dụng:
 
 ## Configuration
 
-Không hardcode:
+Do not hardcode:
 
-* URL
+* URLs
 * API keys
 * Tokens
 * Credentials
 * Feature flags
 * Business configuration
 
-Ưu tiên:
+Prefer:
 
-* config files
-* environment variables
+* Config files
+* Environment variables
 
 ## Paths
 
-Không hardcode:
+Do not hardcode:
 
 * Absolute paths
 * Machine-specific paths
 * Local development paths
 
-Sử dụng framework helpers hoặc configuration.
+Use framework helpers or configuration instead.
 
 ## Error Handling
 
-Không swallow exception.
+Do not swallow exceptions.
 
-Không:
+Do not:
 
 ```php
 catch (\Exception $e) {
 }
 ```
 
-Luôn:
+Always:
 
-* Log phù hợp.
+* Log appropriately.
 * Preserve context.
-* Xử lý rõ ràng.
+* Handle explicitly.
 
 ## Logging
 
-* Log đủ context.
-* Không log secrets.
-* Không log tokens.
-* Không log passwords.
+* Log enough context.
+* Do not log secrets.
+* Do not log tokens.
+* Do not log passwords.
 
-Ưu tiên structured logging nếu project hỗ trợ.
+Prefer structured logging if the project supports it.
 
 ## Validation
 
-Validation phải rõ ràng.
+Validation must be explicit.
 
-Không duplicate validation ở nhiều nơi.
+Do not duplicate validation in multiple places.
 
-Ưu tiên:
+Prefer:
 
 * Request validation
 * DTO validation
 * Domain validation
 
-theo kiến trúc hiện có.
+following the project's existing architecture.
 
 ## Testing
 
-Ưu tiên:
+Prefer:
 
 * PHPUnit
-* Pest (nếu project dùng)
+* Pest (if the project uses it)
 
 Test:
 
@@ -265,54 +265,54 @@ Test:
 * Edge cases
 * Error cases
 
-Không test implementation detail.
+Do not test implementation details.
 
 ## Performance
 
-* Đo đạc trước khi tối ưu.
-* Profile trước khi tối ưu.
-* Kiểm tra query count.
-* Kiểm tra memory usage.
+* Measure before optimizing.
+* Profile before optimizing.
+* Check query count.
+* Check memory usage.
 
-Không tối ưu theo cảm tính.
+Do not optimize based on intuition.
 
 ## Module Boundaries
 
-Tôn trọng module boundaries hiện có.
+Respect existing module boundaries.
 
-Không:
+Do not:
 
-* Import xuyên tầng.
-* Truy cập internal implementation.
-* Tạo dependency không cần thiết.
+* Import across layers.
+* Access internal implementations.
+* Create unnecessary dependencies.
 
-Ưu tiên:
+Prefer:
 
 * Public contracts.
 * Public APIs.
 
 ## AI Safety Rules
 
-Trước khi viết code:
+Before writing code:
 
-* Tìm implementation hiện có.
-* Tìm service tương tự.
-* Tìm controller tương tự.
-* Tìm repository tương tự.
-* Tìm pattern hiện có.
+* Look for existing implementations.
+* Look for similar services.
+* Look for similar controllers.
+* Look for similar repositories.
+* Look for existing patterns.
 
-Ưu tiên tái sử dụng.
+Prefer reuse.
 
-Không được:
+Do not:
 
-* Hardcode dữ liệu.
+* Hardcode data.
 * Hardcode config.
 * Hardcode business rules.
 * Hardcode permissions.
 * Hardcode feature flags.
-* Copy-paste logic giữa modules.
+* Copy-paste logic between modules.
 
-Luôn ưu tiên:
+Always prefer:
 
 * Root cause fix.
 * Reusable solution.
@@ -320,28 +320,28 @@ Luôn ưu tiên:
 
 ## Large Repository Safety
 
-Khi làm việc trong codebase lớn:
+When working in a large codebase:
 
-* Hiểu dependency graph trước khi sửa.
-* Chỉ sửa phạm vi liên quan đến task.
-* Không refactor ngoài phạm vi yêu cầu.
-* Không đổi public API nếu không được yêu cầu.
-* Cảnh báo nếu thay đổi có thể ảnh hưởng module khác.
+* Understand the dependency graph before making changes.
+* Only modify what is relevant to the task.
+* Do not refactor outside the required scope.
+* Do not change public API unless asked.
+* Warn if a change may affect other modules.
 
 ## Completion Checklist
 
-Trước khi hoàn thành task:
+Before completing a task:
 
-* Tuân thủ PSR standards.
-* Có strict_types.
-* Không hardcode.
-* Không duplicate logic.
-* Không có N+1 query.
-* Không query trong loop.
-* Không vi phạm module boundaries.
-* Error được xử lý phù hợp.
-* Có đánh giá edge cases.
-* Tuân thủ pattern hiện có của project.
+* PSR standards followed.
+* `strict_types` declared.
+* No hardcoded values.
+* No duplicate logic.
+* No N+1 queries.
+* No queries inside loops.
+* No module boundary violations.
+* Errors handled appropriately.
+* Edge cases evaluated.
+* Follows existing project patterns.
 
 ## Laravel Architecture Preservation
 
