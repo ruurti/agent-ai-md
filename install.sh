@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 # ── Config ────────────────────────────────────────────────────────────────────
 REPO="ruurti/agent-ai-md"
@@ -21,6 +20,7 @@ GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
 ok()   { echo -e "${GREEN}  ✓${NC} $*"; }
 warn() { echo -e "${YELLOW}  !${NC} $*"; }
 info() { echo -e "${CYAN}  →${NC} $*"; }
+die()  { echo -e "\033[0;31m  ✗${NC} $*" >&2; exit 1; }
 
 # ── Fetch: local copy takes priority, else download from GitHub ───────────────
 fetch() {
@@ -28,22 +28,26 @@ fetch() {
     if [[ -f "$src" ]]; then
         cp "$src" "$dst"
     elif command -v curl &>/dev/null; then
-        curl -fsSL "${RAW}/${src}" -o "$dst"
+        curl -fsSL "${RAW}/${src}" -o "$dst" || die "Failed to download: ${src}"
+    elif command -v wget &>/dev/null; then
+        wget -qO "$dst" "${RAW}/${src}" || die "Failed to download: ${src}"
     else
-        wget -qO "$dst" "${RAW}/${src}"
+        die "Neither curl nor wget found."
     fi
 }
 
 # ── Cleanup: remove all PREFIX_* entries in ~/.claude/ ───────────────────────
 cleanup() {
-    local found=0
+    local count=0
     for entry in "${CLAUDE_DIR}/${PREFIX}_"*; do
         [[ -e "$entry" ]] || continue
         rm -rf "$entry"
         ok "Removed: $entry"
-        found=1
+        count=$((count + 1))
     done
-    if [[ $found -eq 1 ]]; then info "Previous install cleaned."; fi
+    if [[ $count -gt 0 ]]; then
+        info "Previous install cleaned ($count item(s))."
+    fi
 }
 
 # ── Install ───────────────────────────────────────────────────────────────────
@@ -66,10 +70,11 @@ install_tools() {
 install_claude_md() {
     local main="${CLAUDE_DIR}/CLAUDE.md"
     local tmp
-    tmp="$(mktemp)"
+    tmp="$(mktemp)" || die "Failed to create temp file."
 
-    # Fetch source and strip PROJECT CONTEXT → ruurti_CLAUDE.md
     fetch "CLAUDE.md" "$tmp"
+
+    # Strip PROJECT CONTEXT section → ruurti_CLAUDE.md
     awk '
         /^## PROJECT CONTEXT/ { skip=1; next }
         skip && /^## /        { skip=0 }
