@@ -4,6 +4,7 @@ set -euo pipefail
 # ── Config ────────────────────────────────────────────────────────────────────
 PREFIX="ruurti"
 CLAUDE_DIR="${HOME}/.claude"
+MENTION="@${PREFIX}_CLAUDE.md"
 
 # ── Output ────────────────────────────────────────────────────────────────────
 GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
@@ -15,7 +16,7 @@ echo ""
 echo "=== agent-ai-md uninstaller ==="
 echo ""
 
-# ── Remove prefixed dirs/files ─────────────────────────────────────────────────
+# ── Remove all PREFIX_* files/dirs from ~/.claude/ ────────────────────────────
 info "Removing ${PREFIX}_* from ${CLAUDE_DIR}..."
 found=0
 for entry in "${CLAUDE_DIR}/${PREFIX}_"*; do
@@ -26,15 +27,15 @@ for entry in "${CLAUDE_DIR}/${PREFIX}_"*; do
 done
 [[ $found -eq 0 ]] && warn "Nothing to remove (not installed or already uninstalled)."
 
-# ── Restore CLAUDE.md from backup ─────────────────────────────────────────────
+# ── Remove @mention from CLAUDE.md ────────────────────────────────────────────
 echo ""
-info "Restoring CLAUDE.md..."
-if [[ -f "${CLAUDE_DIR}/CLAUDE.md.bak" ]]; then
-    cp "${CLAUDE_DIR}/CLAUDE.md.bak" "${CLAUDE_DIR}/CLAUDE.md"
-    rm -f "${CLAUDE_DIR}/CLAUDE.md.bak"
-    ok "Restored CLAUDE.md from backup."
+info "Cleaning CLAUDE.md..."
+main="${CLAUDE_DIR}/CLAUDE.md"
+if [[ -f "$main" ]] && grep -qF "$MENTION" "$main"; then
+    grep -vF "$MENTION" "$main" > "${main}.tmp" && mv "${main}.tmp" "$main"
+    ok "Removed ${MENTION} from CLAUDE.md"
 else
-    warn "No backup found (${CLAUDE_DIR}/CLAUDE.md.bak). CLAUDE.md left as-is."
+    warn "${MENTION} not found in CLAUDE.md — skipped."
 fi
 
 echo ""

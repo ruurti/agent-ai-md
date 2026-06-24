@@ -10,6 +10,8 @@ PREFIX="ruurti"
 CLAUDE_DIR="${HOME}/.claude"
 LANG_DIR="${CLAUDE_DIR}/${PREFIX}_languages"
 TOOLS_DIR="${CLAUDE_DIR}/${PREFIX}_tools"
+PREFIXED_CLAUDE="${CLAUDE_DIR}/${PREFIX}_CLAUDE.md"
+MENTION="@${PREFIX}_CLAUDE.md"
 
 LANG_FILES=(CLAUDE-python.md CLAUDE-react.md CLAUDE-go.md CLAUDE-php.md)
 TOOL_FILES=(RTK.md)
@@ -32,7 +34,7 @@ fetch() {
     fi
 }
 
-# ── Cleanup: remove anything matching PREFIX_* in ~/.claude/ ──────────────────
+# ── Cleanup: remove all PREFIX_* entries in ~/.claude/ ───────────────────────
 cleanup() {
     local found=0
     for entry in "${CLAUDE_DIR}/${PREFIX}_"*; do
@@ -62,27 +64,33 @@ install_tools() {
 }
 
 install_claude_md() {
-    local dst="${CLAUDE_DIR}/CLAUDE.md"
+    local main="${CLAUDE_DIR}/CLAUDE.md"
     local tmp
     tmp="$(mktemp)"
 
+    # Fetch source and strip PROJECT CONTEXT → ruurti_CLAUDE.md
     fetch "CLAUDE.md" "$tmp"
-
-    # Backup original only once (skip if .bak already exists)
-    if [[ -f "$dst" ]] && [[ ! -f "${dst}.bak" ]]; then
-        cp "$dst" "${dst}.bak"
-        warn "Backed up original CLAUDE.md → ${dst}.bak"
-    fi
-
-    # Strip PROJECT CONTEXT section
     awk '
         /^## PROJECT CONTEXT/ { skip=1; next }
         skip && /^## /        { skip=0 }
         !skip                 { print }
-    ' "$tmp" > "$dst"
-
+    ' "$tmp" > "$PREFIXED_CLAUDE"
     rm -f "$tmp"
-    ok "CLAUDE.md → ${dst}"
+    ok "${PREFIX}_CLAUDE.md → ${PREFIXED_CLAUDE}"
+
+    # Wire up: add @mention to main CLAUDE.md
+    if [[ -f "$main" ]]; then
+        if grep -qF "$MENTION" "$main"; then
+            ok "CLAUDE.md already references ${MENTION} — skipped."
+        else
+            printf '\n%s\n' "$MENTION" >> "$main"
+            ok "Added ${MENTION} to existing CLAUDE.md"
+        fi
+    else
+        mkdir -p "$CLAUDE_DIR"
+        printf '%s\n' "$MENTION" > "$main"
+        ok "Created CLAUDE.md with ${MENTION}"
+    fi
 }
 
 # ── Main ──────────────────────────────────────────────────────────────────────

@@ -32,11 +32,11 @@ wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/install.sh
 
 | Destination | Content |
 | --- | --- |
-| `~/.claude/CLAUDE.md` | Global rules (identity, coding, communication) |
+| `~/.claude/ruurti_CLAUDE.md` | Global rules (identity, coding, communication) |
 | `~/.claude/ruurti_languages/` | Per-language guidelines (Python, React, Go, PHP) |
 | `~/.claude/ruurti_tools/` | Tool guides (RTK) |
 
-Files prefixed with `ruurti_` — re-running install auto-cleans previous version.
+`ruurti_CLAUDE.md` is wired into your existing `~/.claude/CLAUDE.md` via an `@ruurti_CLAUDE.md` mention — existing config is untouched. All installed files share the `ruurti_` prefix for easy cleanup.
 
 ---
 
@@ -62,23 +62,4 @@ No `curl`? Use `wget`:
 wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/uninstall.sh | bash
 ```
 
-Removes `ruurti_*` from `~/.claude/` and restores the original `CLAUDE.md` from backup.
-
----
-
-## Customize (fork)
-
-Change the prefix in `install.sh` line 5:
-
-```bash
-PREFIX="yourname"
-```
-
-Then rename the source directories to match:
-
-```
-ruurti_languages/ → yourname_languages/
-ruurti_tools/     → yourname_tools/
-```
-
-And update `@references` in `CLAUDE.md` accordingly.
+Removes all `ruurti_*` files/dirs from `~/.claude/` and cleans the `@ruurti_CLAUDE.md` mention from `CLAUDE.md`.
