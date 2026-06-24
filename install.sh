@@ -62,6 +62,7 @@ install_tools() {
 install_claude_md() {
     local main="${CLAUDE_DIR}/CLAUDE.md"
 
+    mkdir -p "$INSTALL_DIR"
     fetch "${PREFIX}/CLAUDE.md" "${INSTALL_DIR}/CLAUDE.md"
     ok "CLAUDE.md → ${INSTALL_DIR}/CLAUDE.md"
 
