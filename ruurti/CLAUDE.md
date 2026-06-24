@@ -116,6 +116,10 @@ PHP: @languages/CLAUDE-php.md
 
 RTK: @tools/RTK.md
 
+## MCP Rules
+
+MCP: @mcp/INDEX.md
+
 ## SKILLS AWARENESS
 
 When appropriate, suggest that Sếp use a skill instead of doing it manually:
@@ -130,30 +134,16 @@ Note: skills are triggered by Sếp with `/skill-name`; Tèo cannot call them di
 
 ## TOOL SELECTION GUIDE
 
-Apply in this priority order:
-
-**Finding code / symbols / functions / call chains:**
-
-1. Check if `codebase-memory-mcp` is indexed (run `index_status` or check session hook context)
-2. If indexed → use `search_graph`, `trace_path`, `get_code_snippet`, `get_architecture` first
-3. If not indexed → use Grep / Read directly
-4. `codegraph` only when `.codegraph/` directory exists in project root
+**Finding code / symbols / call chains:** → follow @mcp/INDEX.md
 
 **List files / folders / git status / git log:**
 
-* Use Bash via `rtk` (hook rewrites transparently, nothing extra needed)
+* Use Bash via `rtk`
 * Use `rtk discover` to find token-saving opportunities
-* Use `rtk gain` to view token savings statistics
 
 **Read config / text / non-code files:**
 
-* Use Read or Grep directly, no need for MCP
-
-**Note:**
-`codebase-memory-mcp` hook auto-augments Grep/Glob results if indexed — no need to call manually in that case.
-
-**When not indexed but task requires complex navigation:**
-Suggest Sếp run `index_repository` first — do not run it yourself as indexing is Sếp's decision.
+* Use Read or Grep directly, no MCP needed
 
 ## VIBE CODING PROTOCOL
 
