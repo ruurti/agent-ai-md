@@ -2,11 +2,10 @@
 set -euo pipefail
 
 # ── Config ────────────────────────────────────────────────────────────────────
-PREFIX="ai-md"
+PREFIX="ruurti"
 CLAUDE_DIR="${HOME}/.claude"
-LANG_DIR="${CLAUDE_DIR}/${PREFIX}-languages"
-TOOLS_DIR="${CLAUDE_DIR}/${PREFIX}-tools"
-TRACK_FILE="${CLAUDE_DIR}/.${PREFIX}-installed"
+LANG_DIR="${CLAUDE_DIR}/${PREFIX}_languages"
+TOOLS_DIR="${CLAUDE_DIR}/${PREFIX}_tools"
 
 # ── Output ────────────────────────────────────────────────────────────────────
 GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
@@ -14,57 +13,50 @@ ok()   { echo -e "${GREEN}  ✓${NC} $*"; }
 warn() { echo -e "${YELLOW}  !${NC} $*"; }
 info() { echo -e "${CYAN}  →${NC} $*"; }
 
-# ── Cleanup ───────────────────────────────────────────────────────────────────
+# ── Cleanup: remove anything matching PREFIX_* in ~/.claude/ ──────────────────
 cleanup() {
-    [[ ! -f "$TRACK_FILE" ]] && return
-    info "Removing previous install..."
-    while IFS= read -r entry; do
-        if [[ -e "$entry" ]]; then
-            rm -rf "$entry"
-            ok "Removed: $entry"
-        fi
-    done < "$TRACK_FILE"
-    rm -f "$TRACK_FILE"
+    local found=0
+    for entry in "${CLAUDE_DIR}/${PREFIX}_"*; do
+        [[ -e "$entry" ]] || continue
+        rm -rf "$entry"
+        ok "Removed: $entry"
+        found=1
+    done
+    [[ $found -eq 1 ]] && info "Previous install cleaned."
 }
-
-track()      { echo "$1" >> "$TRACK_FILE"; }
-is_managed() { [[ -f "$TRACK_FILE" ]] && grep -qF "$1" "$TRACK_FILE"; }
 
 # ── Install ───────────────────────────────────────────────────────────────────
 install_languages() {
     mkdir -p "$LANG_DIR"
     cp languages/*.md "$LANG_DIR/"
-    track "$LANG_DIR"
     ok "Languages → ${LANG_DIR}/"
 }
 
 install_tools() {
     mkdir -p "$TOOLS_DIR"
     cp tools/*.md "$TOOLS_DIR/"
-    track "$TOOLS_DIR"
     ok "Tools     → ${TOOLS_DIR}/"
 }
 
 install_claude_md() {
     local dst="${CLAUDE_DIR}/CLAUDE.md"
 
-    # Backup only if not previously installed by us
-    if [[ -f "$dst" ]] && ! is_managed "$dst"; then
+    # Backup original only once (skip if .bak already exists)
+    if [[ -f "$dst" ]] && [[ ! -f "${dst}.bak" ]]; then
         cp "$dst" "${dst}.bak"
-        warn "Backed up existing CLAUDE.md → ${dst}.bak"
+        warn "Backed up original CLAUDE.md → ${dst}.bak"
     fi
 
-    # Strip PROJECT CONTEXT section + rewrite @references to use prefixed dirs
+    # Strip PROJECT CONTEXT section + rewrite @references to prefixed dirs
     awk '
         /^## PROJECT CONTEXT/ { skip=1; next }
         skip && /^## /        { skip=0 }
         !skip                 { print }
     ' CLAUDE.md \
-    | sed "s|@languages/|@${PREFIX}-languages/|g" \
-    | sed "s|@tools/|@${PREFIX}-tools/|g" \
+    | sed "s|@languages/|@${PREFIX}_languages/|g" \
+    | sed "s|@tools/|@${PREFIX}_tools/|g" \
     > "$dst"
 
-    track "$dst"
     ok "CLAUDE.md → ${dst}"
 }
 
@@ -81,10 +73,11 @@ echo ""
 echo "=== agent-ai-md installer ==="
 echo ""
 
+info "Cleaning ${CLAUDE_DIR}/${PREFIX}_* ..."
 cleanup
-info "Installing to ${CLAUDE_DIR}..."
 echo ""
 
+info "Installing to ${CLAUDE_DIR}..."
 install_languages
 install_tools
 install_claude_md
