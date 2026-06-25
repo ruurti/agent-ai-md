@@ -64,13 +64,50 @@ wire_mention() {
         if grep -qF "$MENTION" "$main"; then
             ok "CLAUDE.md already references ${MENTION} — skipped."
         else
-            printf '\n%s\n' "$MENTION" >> "$main"
+            printf '\n%s\n' "$MENTION" >> "$main" || die "Failed to write to ${main}"
             ok "Added ${MENTION} to existing CLAUDE.md"
         fi
     else
         mkdir -p "$CLAUDE_DIR"
-        printf '%s\n' "$MENTION" > "$main"
+        printf '%s\n' "$MENTION" > "$main" || die "Failed to create ${main}"
         ok "Created CLAUDE.md with ${MENTION}"
+    fi
+}
+
+# ── Verify install ────────────────────────────────────────────────────────────
+verify_install() {
+    local main="${CLAUDE_DIR}/CLAUDE.md"
+    local rules="${INSTALL_DIR}/CLAUDE.md"
+    local ok=true
+
+    echo ""
+    echo "── Verification ──────────────────────────────────────────────"
+
+    if [[ -f "$rules" ]]; then
+        ok "${rules}"
+    else
+        warn "MISSING: ${rules}"
+        ok=false
+    fi
+
+    if [[ -f "$main" ]] && grep -qF "$MENTION" "$main"; then
+        ok "${main}  (contains ${MENTION})"
+    else
+        warn "MISSING mention in ${main}"
+        ok=false
+    fi
+
+    echo ""
+    echo "── ~/.claude/CLAUDE.md content ───────────────────────────────"
+    if [[ -f "$main" ]]; then
+        cat "$main"
+    else
+        warn "(file not found)"
+    fi
+    echo "──────────────────────────────────────────────────────────────"
+
+    if [[ "$ok" == false ]]; then
+        die "Verification failed — re-run the installer or check permissions."
     fi
 }
 
@@ -87,5 +124,11 @@ info "Installing to ${INSTALL_DIR}..."
 install_files
 wire_mention
 
+verify_install
+
 echo ""
-ok "Done. Restart Claude Code to apply changes."
+echo -e "${YELLOW}  ★  RESTART REQUIRED  ★${NC}"
+echo "     CLI  : exit and reopen your terminal, then run 'claude'"
+echo "     VSCode: Ctrl+Shift+P → 'Developer: Reload Window'"
+echo "     App  : quit and reopen Claude Code"
+echo ""
