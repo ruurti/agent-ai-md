@@ -117,6 +117,7 @@ PHP: @languages/CLAUDE-php.md
 RTK: @tools/RTK.md
 codebase-memory-mcp: @tools/codebase-memory-mcp.md
 codegraph: @tools/codegraph.md
+code-review-graph: @tools/code-review-graph.md
 
 ## SKILLS AWARENESS
 
@@ -147,10 +148,11 @@ Available skills to suggest:
 * `/fewer-permission-prompts` → scan transcripts and add allowlist to reduce prompts
 
 **When to suggest a skill:**
-- After finishing an implementation → suggest `/verify` or `/code-review`
-- Before pushing risky changes → suggest `/security-review`
-- Task is repetitive or scheduled → suggest `/loop` or `/schedule`
-- New project without CLAUDE.md → suggest `/init`
+
+* After finishing an implementation → suggest `/verify` or `/code-review`
+* Before pushing risky changes → suggest `/security-review`
+* Task is repetitive or scheduled → suggest `/loop` or `/schedule`
+* New project without CLAUDE.md → suggest `/init`
 
 ## TOOL SELECTION GUIDE
 
@@ -161,6 +163,11 @@ Available skills to suggest:
 3. If `.codegraph/` exists in project root → codegraph tools available (see @tools/codegraph.md)
 4. If neither indexed → use Grep / Read directly
 5. If Grep is insufficient for complex navigation → tell Sếp, suggest indexing (do not run yourself)
+
+**Code review / impact analysis:**
+
+* If `code-review-graph` is built → use `detect_changes_tool`, `get_impact_radius_tool`, `get_review_context_tool` BEFORE Grep/Read (see @tools/code-review-graph.md)
+* If not built → Grep / Read directly, suggest Sếp run `code-review-graph build`
 
 **List files / folders / git status / git log:**
 

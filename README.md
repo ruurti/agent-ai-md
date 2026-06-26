@@ -151,6 +151,43 @@ Start a new Claude Code session after running `codegraph init`.
 - `.codegraph/` missing → run `codegraph init` in project root first
 - MCP not connected → check `claude mcp list` and add it if missing: `claude mcp add codegraph -- codegraph mcp`
 
+### code-review-graph
+
+Local code intelligence graph — 8.2× average context reduction on reviews, impact analysis, and large-repo navigation.
+
+**Install:**
+
+```bash
+pip install code-review-graph   # or: uv pip install code-review-graph
+```
+
+**Index your workspace** (one-time per project, re-run after large changes):
+
+```bash
+code-review-graph build
+```
+
+**Wire into Claude Code** (auto-detects and adds MCP):
+
+```bash
+code-review-graph install
+```
+
+**Verify** (inside a Claude Code session):
+
+```bash
+/mcp
+# → code-review-graph should show as "connected"
+```
+
+**Key tools available after setup:** `detect_changes_tool`, `get_impact_radius_tool`, `get_review_context_tool`, `semantic_search_nodes_tool`, `query_graph_tool`, `get_architecture_overview_tool`
+
+**Troubleshoot:**
+
+- MCP not connected → run `claude mcp list`; if missing, add manually: `claude mcp add code-review-graph -- code-review-graph mcp`
+- `code-review-graph build` is slow → expected for first run; subsequent runs are incremental (~200ms)
+- `pip` not found → install Python ≥3.10 first, or use `uv pip install code-review-graph`
+
 ---
 
 ## Customize (fork)
