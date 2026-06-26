@@ -9,11 +9,11 @@ Personal [Claude Code](https://claude.ai/code) configuration — identity rules,
 Installs into `~/.claude/` — applies to every Claude Code session on this machine.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/installer/install.sh | bash
 ```
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/installer/install.sh | bash
 ```
 
 Works on macOS, Linux, WSL, and Git Bash. Re-running updates to the latest version.
@@ -23,11 +23,11 @@ Works on macOS, Linux, WSL, and Git Bash. Re-running updates to the latest versi
 ### Uninstall (global)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/uninstall.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/installer/uninstall.sh | bash
 ```
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/uninstall.sh | bash
+wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/installer/uninstall.sh | bash
 ```
 
 ---
@@ -38,31 +38,31 @@ Installs into a specific project directory — applies only when Claude Code ope
 
 ```bash
 # Install into a specific project
-curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/install-local.sh | bash -s -- /path/to/your/project
+curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/installer/install-local.sh | bash -s -- /path/to/your/project
 ```
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/install-local.sh | bash -s -- /path/to/your/project
+wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/installer/install-local.sh | bash -s -- /path/to/your/project
 ```
 
 ```bash
 # Install into the current directory
-curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/install-local.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/installer/install-local.sh | bash
 ```
 
 ### Uninstall (local)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/uninstall-local.sh | bash -s -- /path/to/your/project
+curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/installer/uninstall-local.sh | bash -s -- /path/to/your/project
 ```
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/uninstall-local.sh | bash -s -- /path/to/your/project
+wget -qO- https://raw.githubusercontent.com/ruurti/agent-ai-md/master/installer/uninstall-local.sh | bash -s -- /path/to/your/project
 ```
 
 ```bash
 # Uninstall from the current directory
-curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/uninstall-local.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ruurti/agent-ai-md/master/installer/uninstall-local.sh | bash
 ```
 
 ---
