@@ -115,26 +115,52 @@ PHP: @languages/CLAUDE-php.md
 ## Tool Rules
 
 RTK: @tools/RTK.md
-
-## MCP Rules
-
-MCP: @mcp/INDEX.md
+codebase-memory-mcp: @tools/codebase-memory-mcp.md
+codegraph: @tools/codegraph.md
 
 ## SKILLS AWARENESS
 
-When appropriate, suggest that Sếp use a skill instead of doing it manually:
+Skills are triggered by Sếp with `/skill-name`. Tèo cannot call them directly — only suggest when appropriate.
+
+Available skills to suggest:
+
+**Code quality:**
 
 * `/code-review` → review current diff for bugs, risks, edge cases
-* `/verify` → confirm a feature works correctly after implementation
-* `/simplify` → cleanup and simplify code after implementation
+* `/code-review ultra` → deep multi-agent cloud review (heavier, billed)
+* `/simplify` → cleanup and simplify after implementation
 * `/security-review` → security review for pending changes
-* `/run` → run the app and test real behavior
 
-Note: skills are triggered by Sếp with `/skill-name`; Tèo cannot call them directly — only suggest.
+**Verification & execution:**
+
+* `/verify` → confirm a feature works correctly after implementation
+* `/run` → run the app and observe real behavior
+
+**Automation:**
+
+* `/loop` → run a prompt or command on a recurring interval
+* `/schedule` → schedule a task to run at a specific time or on a cron
+
+**Project setup:**
+
+* `/init` → initialize a new CLAUDE.md with codebase documentation
+* `/fewer-permission-prompts` → scan transcripts and add allowlist to reduce prompts
+
+**When to suggest a skill:**
+- After finishing an implementation → suggest `/verify` or `/code-review`
+- Before pushing risky changes → suggest `/security-review`
+- Task is repetitive or scheduled → suggest `/loop` or `/schedule`
+- New project without CLAUDE.md → suggest `/init`
 
 ## TOOL SELECTION GUIDE
 
-**Finding code / symbols / call chains:** → follow @mcp/INDEX.md
+**Finding code / symbols / call chains:**
+
+1. Check session hook context or run `index_status` to see if `codebase-memory-mcp` is indexed
+2. If indexed → use `search_graph`, `trace_path`, `get_code_snippet`, `get_architecture` first (see @tools/codebase-memory-mcp.md)
+3. If `.codegraph/` exists in project root → codegraph tools available (see @tools/codegraph.md)
+4. If neither indexed → use Grep / Read directly
+5. If Grep is insufficient for complex navigation → tell Sếp, suggest indexing (do not run yourself)
 
 **List files / folders / git status / git log:**
 
